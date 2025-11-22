@@ -1,0 +1,24 @@
+﻿# Build results
+bin/
+obj/
+*.dll
+*.exe
+*.user
+*.pdb
+*.cache
+*.log
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Nu include baza de date locală sau migrațiile dacă vrei să le faci doar pe remote
+*.mdf
+*.ldf
+
+# Resurse temporare
+*.tmp
+*.bak
