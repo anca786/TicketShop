@@ -6,7 +6,7 @@ using TicketShop.Models;
 
 namespace TicketShop.Data
 {
-    public class ApplicationDBContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDBContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
             : base(options)

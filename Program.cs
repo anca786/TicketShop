@@ -6,14 +6,21 @@ using TicketShop.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(connectionString));
 
-// ...
 
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.SignIn.RequireConfirmedAccount = false; 
+})
     .AddEntityFrameworkStores<ApplicationDBContext>()
     .AddDefaultTokenProviders();
+
 // ...
 builder.Services.AddControllersWithViews();
 
@@ -40,18 +47,19 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
-        // Apelul cãtre clasa staticã DbSeeder
+        // Apelul cï¿½tre clasa staticï¿½ DbSeeder
         await DbSeeder.SeedData(services);
     }
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "A apãrut o eroare la seeding-ul bazei de date.");
+        logger.LogError(ex, "A apï¿½rut o eroare la seeding-ul bazei de date.");
     }
 }
 
