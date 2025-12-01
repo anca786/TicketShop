@@ -1,4 +1,6 @@
-﻿namespace TicketShop.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace TicketShop.Models
 {
     public class Eveniment
     {
@@ -7,6 +9,9 @@
         public string Descriere { get; set; }
         public DateTime Data { get; set; }
         public string Locatie { get; set; }
+
+        [Display(Name = "Link Imagine (URL)")]
+        public string? ImagineUrl { get; set; }
 
         // Relație cu categorie
         public int CategorieId { get; set; }

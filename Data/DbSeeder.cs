@@ -52,9 +52,8 @@ public static class DbSeeder
                     Descriere = "Cel mai mare spectacol al anului.",
                     Data = DateTime.Now.AddDays(30),
                     Locatie = "Arena Națională, București",
-                    // Presupunem ca ati adaugat campul Pret in modelul Eveniment
-                    
-                    CategorieId = concert.Id
+                    CategorieId = concert.Id,
+                    ImagineUrl = "https://images.unsplash.com/photo-1540039155733-5bb30b53aa14?auto=format&fit=crop&q=80&w=600"
                 },
                 new Eveniment
                 {
@@ -62,8 +61,8 @@ public static class DbSeeder
                     Descriere = "Cei mai buni jucători se întâlnesc la Paris.",
                     Data = DateTime.Now.AddMonths(2),
                     Locatie = "Roland Garros, Paris",
-                    
-                    CategorieId = sport.Id
+                    CategorieId = sport.Id,
+                    ImagineUrl = "https://images.unsplash.com/photo-1546521343-4eb2c01aa44b?auto=format&fit=crop&q=80&w=600"
                 },
                 new Eveniment
                 {
@@ -71,8 +70,8 @@ public static class DbSeeder
                     Descriere = "Clasicul lui Ceaikovski, spectacol de neuitat.",
                     Data = DateTime.Now.AddDays(15),
                     Locatie = "Opera Națională, Cluj",
-                    
-                    CategorieId = context.Categorii.First(c => c.Nume == "Teatru").Id
+                    CategorieId = context.Categorii.First(c => c.Nume == "Teatru").Id,
+                    ImagineUrl = "https://smetanovalitomysl.cz/wp-content/uploads/2025/01/F.-Vogel-program-SL.jpg"
                 },
                 new Eveniment
                 {
@@ -80,8 +79,8 @@ public static class DbSeeder
                     Descriere = "Cea mai mare petrecere din Transilvania.",
                     Data = DateTime.Parse("2026-08-05"),
                     Locatie = "Cluj Arena, Cluj-Napoca",
-                    
-                    CategorieId = concert.Id
+                    CategorieId = concert.Id,
+                    ImagineUrl = "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&q=80&w=600"
                 },
                 new Eveniment
                 {
@@ -89,8 +88,8 @@ public static class DbSeeder
                     Descriere = "Meci incendiar între rivalii din București.",
                     Data = DateTime.Now.AddDays(7),
                     Locatie = "Stadionul Steaua, București",
-                    
-                    CategorieId = sport.Id
+                    CategorieId = sport.Id,
+                    ImagineUrl = "https://media.mediafax.ro/G5cJFl9Wi2Oy7UE9YDmkcec59rs=/1280x720/smart/filters:contrast(5):format(webp):quality(80)/https://www.mediafax.ro//wp-content/uploads/2025/03/7962026-mediafax-foto-ovidiu-matiu-1024x683.jpg"
                 }
             };
             context.Evenimente.AddRange(evenimente);
