@@ -1,0 +1,87 @@
+﻿@model TicketShop.Models.Eveniment
+@using TicketShop.Models
+
+@{
+    ViewData["Title"] = "Editează Eveniment";
+    var categorii = ViewBag.Categorii as List<Categorie>;
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">
+                        <i class="bi bi-pencil"></i> Editează Eveniment
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Evenimente" asp-action="Edit" method="post">
+                        <div asp-validation-summary="All" class="alert alert-danger"></div>
+
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-3">
+                            <label asp-for="Nume" class="form-label fw-bold"></label>
+                            <input asp-for="Nume" class="form-control" />
+                            <span asp-validation-for="Nume" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Descriere" class="form-label fw-bold"></label>
+                            <textarea asp-for="Descriere" class="form-control"></textarea>
+                            <span asp-validation-for="Descriere" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Data" class="form-label fw-bold"></label>
+                            <input asp-for="Data" type="datetime-local" class="form-control" />
+                            <span asp-validation-for="Data" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Locatie" class="form-label fw-bold"></label>
+                            <input asp-for="Locatie" class="form-control" />
+                            <span asp-validation-for="Locatie" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ImagineUrl" class="form-label fw-bold"></label>
+                            <input asp-for="ImagineUrl" class="form-control" />
+                            <span asp-validation-for="ImagineUrl" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="CategorieId" class="form-label fw-bold">Categorie</label>
+                            <select asp-for="CategorieId" class="form-select">
+                                @foreach (var c in categorii)
+                                {
+                                    <option value="@c.Id"
+                                            selected="@(c.Id == Model.CategorieId)">
+                                        @c.Nume
+                                    </option>
+                                }
+                            </select>
+                            <span asp-validation-for="CategorieId" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-controller="Evenimente" asp-action="AdminIndex" class="btn btn-secondary">
+                                Înapoi la listă
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                Salvează Modificările
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
