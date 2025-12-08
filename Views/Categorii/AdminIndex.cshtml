@@ -1,0 +1,112 @@
+﻿@model IEnumerable<TicketShop.Models.Categorie>
+
+@{
+    ViewData["Title"] = "Gestionează Categorii";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="mb-0">Gestionează Categorii</h2>
+
+        <a asp-controller="Categorii" asp-action="New" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Adaugă Categorie
+        </a>
+    </div>
+
+    <table class="table table-striped table-hover align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>ID</th>
+                <th>Nume</th>
+                <th>Nr. evenimente</th>
+                <th class="text-end">Acțiuni</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Nume</td>
+                    <td>@(item.Evenimente?.Count ?? 0)</td>
+                    <td class="text-end">
+                        <a asp-controller="Categorii"
+                           asp-action="Edit"
+                           asp-route-id="@item.Id"
+                           class="btn btn-warning btn-sm me-2">
+                            <i class="bi bi-pencil"></i> Editează
+                        </a>
+
+                        <!-- Buton care doar deschide modalul -->
+                        <button type="button"
+                                class="btn btn-danger btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteModal"
+                                data-id="@item.Id"
+                                data-name="@item.Nume">
+                            <i class="bi bi-trash"></i> Șterge
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Formular + Modal de confirmare ștergere -->
+<form id="deleteForm" asp-controller="Categorii" asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" id="deleteId" />
+
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger">
+                        <i class="bi bi-exclamation-triangle-fill"></i> Confirmă ștergerea
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Închide"></button>
+                </div>
+
+                <div class="modal-body text-center">
+                    <!-- imagine funny - pune fișierul în wwwroot/images/ -->
+                    <img src="~/imagini/pisicut.png" alt="Funny warning" class="img-fluid mb-3" />
+
+                    <p class="fw-bold mb-1">
+                        
+                        Sigur vrei să ștergi categoria
+                        <span id="deleteName" class="text-danger"></span>?
+                    </p>
+                    <p class="text-muted small">
+                        Vor fi șterse și toate evenimentele asociate acestei categorii.
+                    </p>
+                </div>
+
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Nu, m-am răzgândit
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        Da, șterge tot
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const name = button.getAttribute('data-name');
+
+            document.getElementById('deleteId').value = id;
+            document.getElementById('deleteName').textContent = '"' + name + '"';
+        });
+    </script>
+}

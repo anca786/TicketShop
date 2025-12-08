@@ -1,0 +1,54 @@
+﻿@model TicketShop.Models.Categorie
+
+@{
+    ViewData["Title"] = "Editează Categorie";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-warning text-dark">
+                    <h3 class="mb-0">
+                        <i class="bi bi-pencil"></i> Editează Categoria
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <form asp-controller="Categorii" asp-action="Edit" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-3">
+                            <label class="form-label text-muted small">ID Categorie</label>
+                            <input type="text" class="form-control-plaintext" value="@Model.Id" readonly />
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Nume" class="form-label fw-bold">
+                                Nume Categorie <span class="text-danger">*</span>
+                            </label>
+                            <input asp-for="Nume" class="form-control form-control-lg" autofocus />
+                            <span asp-validation-for="Nume" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-controller="Categorii" asp-action="AdminIndex" class="btn btn-secondary">
+                                <i class="bi bi-arrow-left"></i> Anulează
+                            </a>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-save"></i> Salvează Modificările
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
