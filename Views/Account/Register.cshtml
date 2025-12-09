@@ -32,6 +32,9 @@
                 <input asp-for="Password" class="form-control" placeholder="Parola" />
                 <label asp-for="Password">Parolă</label>
                 <span asp-validation-for="Password" class="text-danger"></span>
+                <div class="form-text text-muted small">
+                    Parola trebuie să aibă minim 8 caractere, o literă mare, o cifră și un simbol.
+                </div>
             </div>
 
             <div class="form-floating mb-3">

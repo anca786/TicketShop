@@ -53,6 +53,11 @@ public class EvenimenteController : Controller
         ModelState.Remove(nameof(Eveniment.Reviews));
         ModelState.Remove(nameof(Eveniment.Categorie));
 
+        if (eveniment.Data < DateTime.Now)
+        {
+            ModelState.AddModelError("Data", "Data evenimentului trebuie să fie în viitor.");
+        }
+
         if (!ModelState.IsValid)
         {
             ViewBag.Categorii = await _context.Categorii.OrderBy(c => c.Nume).ToListAsync();
@@ -94,6 +99,11 @@ public class EvenimenteController : Controller
         ModelState.Remove(nameof(Eveniment.Bilete));
         ModelState.Remove(nameof(Eveniment.Reviews));
         ModelState.Remove(nameof(Eveniment.Categorie));
+
+        if (eveniment.Data < DateTime.Now)
+        {
+            ModelState.AddModelError("Data", "Data evenimentului trebuie să fie în viitor.");
+        }
 
         if (!ModelState.IsValid)
         {
