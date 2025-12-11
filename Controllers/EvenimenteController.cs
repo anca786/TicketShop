@@ -12,15 +12,21 @@ public class EvenimenteController : Controller
         _context = context;
     }
 
-    // lista publică o lași cum este:
     public async Task<IActionResult> Index(int? categoryId)
     {
+        ViewBag.Categorii = await _context.Categorii.OrderBy(c => c.Nume).ToListAsync();
+
+        ViewBag.CurrentCategoryId = categoryId;
+
         var eventsQuery = _context.Evenimente.Include(e => e.Categorie).AsQueryable();
+
         if (categoryId.HasValue)
         {
             eventsQuery = eventsQuery.Where(e => e.CategorieId == categoryId);
         }
+
         var evenimente = await eventsQuery.OrderBy(e => e.Data).ToListAsync();
+
         return View(evenimente);
     }
 
@@ -56,6 +62,36 @@ public class EvenimenteController : Controller
         if (eveniment.Data < DateTime.Now)
         {
             ModelState.AddModelError("Data", "Data evenimentului trebuie să fie în viitor.");
+        }
+
+        if (eveniment.ImagineFisier != null && eveniment.ImagineFisier.Length > 0)
+        {
+            // 1. Validare Mărime (Max 5 MB)
+            if (eveniment.ImagineFisier.Length > 5 * 1024 * 1024)
+            {
+                ModelState.AddModelError("ImagineFisier", "Imaginea este prea mare (maxim 5MB).");
+            }
+
+            // 2. Validare Format
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+            var extension = Path.GetExtension(eveniment.ImagineFisier.FileName).ToLower();
+            if (!allowedExtensions.Contains(extension))
+            {
+                ModelState.AddModelError("ImagineFisier", "Format neacceptat.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var fileName = Guid.NewGuid().ToString() + extension;
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await eveniment.ImagineFisier.CopyToAsync(stream);
+                }
+                eveniment.ImagineUrl = "/images/" + fileName;
+            }
         }
 
         if (!ModelState.IsValid)
@@ -103,6 +139,35 @@ public class EvenimenteController : Controller
         if (eveniment.Data < DateTime.Now)
         {
             ModelState.AddModelError("Data", "Data evenimentului trebuie să fie în viitor.");
+        }
+
+        if (eveniment.ImagineFisier != null && eveniment.ImagineFisier.Length > 0)
+        {
+            if (eveniment.ImagineFisier.Length > 5 * 1024 * 1024)
+            {
+                ModelState.AddModelError("ImagineFisier", "Imaginea este prea mare (maxim 5MB).");
+            }
+
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+            var extension = Path.GetExtension(eveniment.ImagineFisier.FileName).ToLower();
+            if (!allowedExtensions.Contains(extension))
+            {
+                ModelState.AddModelError("ImagineFisier", "Format neacceptat.");
+            }
+
+            if (ModelState.IsValid)
+            {
+                var fileName = Guid.NewGuid().ToString() + extension;
+                var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", fileName);
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await eveniment.ImagineFisier.CopyToAsync(stream);
+                }
+
+                eveniment.ImagineUrl = "/images/" + fileName;
+            }
         }
 
         if (!ModelState.IsValid)

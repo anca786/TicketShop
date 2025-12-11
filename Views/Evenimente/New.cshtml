@@ -16,7 +16,7 @@
                     </h3>
                 </div>
                 <div class="card-body">
-                    <form asp-controller="Evenimente" asp-action="New" method="post">
+                    <form asp-controller="Evenimente" asp-action="New" method="post" enctype="multipart/form-data">
 
                         <div class="mb-3">
                             <label asp-for="Nume" class="form-label fw-bold"></label>
@@ -43,9 +43,9 @@
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="ImagineUrl" class="form-label fw-bold"></label>
-                            <input asp-for="ImagineUrl" class="form-control" />
-                            <span asp-validation-for="ImagineUrl" class="text-danger"></span>
+                            <label asp-for="ImagineFisier" class="form-label fw-bold">Afis Eveniment</label>
+                            <input asp-for="ImagineFisier" class="form-control" type="file" accept=".png,.jpg,.jpeg,.webp" />
+                            <span asp-validation-for="ImagineFisier" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
