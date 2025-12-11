@@ -1,4 +1,4 @@
-html {
+﻿html {
   font-size: 14px;
 }
 
@@ -37,3 +37,68 @@ body {
     .card:hover {
         transform: translateY(-5px);
     }
+
+
+:root {
+    --pink-main: #FF89D8; 
+    --pink-dark: #c2185b; 
+    --pink-light: #f8bbd0; 
+}
+
+.bg-primary {
+    background-color: var(--pink-main) !important;
+}
+
+.text-primary {
+    color: var(--pink-main) !important;
+}
+
+.btn-primary {
+    background-color: var(--pink-main) !important;
+    border-color: var(--pink-main) !important;
+}
+
+    .btn-primary:hover, .btn-primary:focus, .btn-primary:active {
+        background-color: var(--pink-dark) !important;
+        border-color: var(--pink-dark) !important;
+    }
+
+.btn-outline-primary {
+    color: var(--pink-main) !important;
+    border-color: var(--pink-main) !important;
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--pink-main) !important;
+        color: white !important;
+    }
+
+.list-group-item.active {
+    background-color: var(--pink-main) !important;
+    border-color: var(--pink-main) !important;
+    color: white !important;
+}
+
+.page-item.active .page-link {
+    background-color: var(--pink-main) !important;
+    border-color: var(--pink-main) !important;
+}
+
+a {
+    color: var(--pink-main);
+    text-decoration: none;
+}
+
+    a:hover {
+        color: var(--pink-dark);
+        text-decoration: underline;
+    }
+
+.navbar.bg-primary {
+    background: linear-gradient(45deg, var(--pink-main), #ff6090) !important;
+}
+
+.badge, .badge.bg-primary, .badge.bg-info, .badge.bg-success, .badge.bg-danger, .badge.bg-warning {
+    background-color: var(--pink-main) !important;
+    color: white !important; 
+}

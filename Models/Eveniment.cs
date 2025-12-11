@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TicketShop.Models
 {
@@ -25,8 +26,11 @@ namespace TicketShop.Models
         public string Locatie { get; set; }
 
         [Display(Name = "Link Imagine (URL)")]
-        [Url(ErrorMessage = "Te rog introdu un URL valid (ex: http://site.com/poza.jpg).")]
         public string? ImagineUrl { get; set; }
+
+        [NotMapped]
+        [Display(Name = "Încarcă Imagine")]
+        public IFormFile? ImagineFisier { get; set; }
 
         // Relație cu categorie
         [Display(Name = "Categorie")]
