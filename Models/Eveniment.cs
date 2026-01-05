@@ -40,5 +40,7 @@ namespace TicketShop.Models
         // Relație 1:N cu Bilet și Review
         public ICollection<Bilet> Bilete { get; set; }
         public ICollection<Review> Reviews { get; set; }
+        [Column(TypeName = "decimal(18,2)")] // Formatare pentru bani
+        public decimal Pret { get; set; }
     }
 }

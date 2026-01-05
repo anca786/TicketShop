@@ -12,22 +12,36 @@ public class EvenimenteController : Controller
         _context = context;
     }
 
-    public async Task<IActionResult> Index(int? categoryId)
+    // GET: Evenimente
+    // GET: Evenimente
+    public async Task<IActionResult> Index(string searchString, int? categoryId) // Păstrează parametrul categoryId mic
     {
-        ViewBag.Categorii = await _context.Categorii.OrderBy(c => c.Nume).ToListAsync();
+        // 1. Includem Categoria pentru afișare
+        var evenimente = _context.Evenimente.Include(e => e.Categorie).AsQueryable();
 
-        ViewBag.CurrentCategoryId = categoryId;
-
-        var eventsQuery = _context.Evenimente.Include(e => e.Categorie).AsQueryable();
-
-        if (categoryId.HasValue)
+        // 2. Filtrare după Text
+        if (!string.IsNullOrEmpty(searchString))
         {
-            eventsQuery = eventsQuery.Where(e => e.CategorieId == categoryId);
+            evenimente = evenimente.Where(e => e.Nume.Contains(searchString));
         }
 
-        var evenimente = await eventsQuery.OrderBy(e => e.Data).ToListAsync();
+        // 3. Filtrare după Categorie
+        // AICI ERA PROBLEMA: Probabil la tine în model proprietatea se numește 'CategorieId' sau verificăm după obiect
+        if (categoryId.HasValue && categoryId != 0)
+        {
+            // Încercăm varianta cea mai sigură: verificăm ID-ul obiectului Categorie
+            evenimente = evenimente.Where(e => e.Categorie.Id == categoryId);
+        }
 
-        return View(evenimente);
+        // 4. Dropdown-ul
+        // AICI ERA A DOUA PROBLEMĂ: La tine tabela se numește probabil 'Categorii' (nu Categories)
+        // Verificăm dacă _context.Categorii există. Dacă nu, lasă-mi un comentariu.
+        ViewBag.Categorii = new SelectList(await _context.Categorii.ToListAsync(), "Id", "Nume", categoryId);
+
+        ViewData["CurrentFilter"] = searchString;
+        ViewData["CurrentCategory"] = categoryId;
+
+        return View(await evenimente.ToListAsync());
     }
 
     // ADMIN: lista de management
@@ -206,6 +220,37 @@ public class EvenimenteController : Controller
         _context.Evenimente.Remove(eveniment);   // șterge DOAR evenimentul
         await _context.SaveChangesAsync();
         TempData["message"] = "Evenimentul a fost șters cu succes!";
+        return RedirectToAction(nameof(AdminIndex));
+    }
+    // POST: Evenimente/GenereazaBilete
+    [HttpPost]
+    public async Task<IActionResult> GenereazaBilete(int id, int numarBilete, decimal pret)
+    {
+        var eveniment = await _context.Evenimente.FindAsync(id);
+        if (eveniment == null) return NotFound();
+
+        if (numarBilete > 0 && pret > 0)
+        {
+            var bileteNoi = new List<Bilet>();
+
+            for (int i = 0; i < numarBilete; i++)
+            {
+                bileteNoi.Add(new Bilet
+                {
+                    EvenimentId = id,
+                    Pret = pret,
+                    Vandut = false,
+                    CosId = null // E liber
+                });
+            }
+
+            await _context.Bilete.AddRangeAsync(bileteNoi);
+            await _context.SaveChangesAsync();
+
+            TempData["Mesaj"] = $"Au fost generate {numarBilete} bilete cu succes!";
+        }
+
+        // Ne întoarcem la pagina de administrare (AdminIndex) sau Index
         return RedirectToAction(nameof(AdminIndex));
     }
 

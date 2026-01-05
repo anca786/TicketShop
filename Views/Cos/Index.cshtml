@@ -1,0 +1,63 @@
+﻿@model TicketShop.Models.Cos
+
+<h2>Coșul meu</h2>
+
+@if (Model == null || !Model.Bilete.Any())
+{
+    <div class="alert alert-info">Coșul este gol.</div>
+}
+else
+{
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Eveniment</th>
+                <th>Preț Unitar</th>
+                <th>Cantitate</th>
+                <th>Subtotal</th>
+                <th>Acțiuni</th>
+            </tr>
+        </thead>
+        <tbody>
+            @* AICI ESTE MAGIA: Grupăm biletele după ID-ul evenimentului *@
+            @foreach (var grup in Model.Bilete.GroupBy(b => b.EvenimentId))
+            {
+                // Luăm primul bilet din grup ca să avem acces la Nume, Preț etc.
+                var biletReferinta = grup.First();
+                var cantitate = grup.Count();
+                var subtotal = grup.Sum(b => b.Pret);
+
+                <tr>
+                    <td>
+                        <strong>@biletReferinta.Eveniment.Nume</strong><br />
+                        <small class="text-muted">@biletReferinta.Eveniment.Locatie</small>
+                    </td>
+                    <td>@biletReferinta.Pret.ToString("0.00") RON</td>
+                    <td>
+                        <span class="badge bg-primary rounded-pill">@cantitate buc.</span>
+                    </td>
+                    <td class="fw-bold">@subtotal.ToString("0.00") RON</td>
+                    <td>
+                       
+                        <a asp-action="Sterge" asp-route-biletId="@biletReferinta.Id"
+                           class="btn btn-outline-danger btn-sm">
+                            <i class="bi bi-trash"></i> Șterge 1 buc.
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="table-light">
+                <td colspan="3" class="text-end fw-bold fs-5">TOTAL GENERAL:</td>
+                <td colspan="2" class="fw-bold fs-4 text-success">
+                    @Model.Bilete.Sum(b => b.Pret).ToString("0.00") RON
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="text-end mt-4">
+        <button class="btn btn-success btn-lg">Finalizează Comanda</button>
+    </div>
+}

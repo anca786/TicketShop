@@ -102,3 +102,72 @@ a {
     background-color: var(--pink-main) !important;
     color: white !important; 
 }
+/* Stilizare pentru butonul de Wishlist */
+.btn-wishlist {
+    border: none;
+    background: transparent;
+    transition: transform 0.2s;
+}
+
+    .btn-wishlist:hover {
+        transform: scale(1.1); /* Se mărește puțin când pui mouse-ul */
+    }
+
+/* Când este activ (adăugat la favorite) */
+.heart-active {
+    color: #ff4081; /* Roz aprins */
+    animation: heart-pop 0.4s ease-out;
+}
+
+/* Animația de "pop" */
+@keyframes heart-pop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.4);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Asigură-te că iconița goală e gri sau neagră */
+.bi-heart {
+    color: #6c757d;
+}
+/* ============ WISHLIST FIX ============ */
+.btn-wishlist {
+    border: none;
+    background: transparent;
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+    .btn-wishlist:hover {
+        transform: scale(1.2);
+    }
+
+/* Forțăm culoarea roz când e activ */
+.heart-active {
+    color: #ff4081 !important; /* Roz aprins */
+    fill: #ff4081 !important;
+    animation: heart-pop 0.4s ease-out;
+}
+
+/* Definim animația de pop */
+@keyframes heart-pop {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.4);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}

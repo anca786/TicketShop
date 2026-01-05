@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketShop.Data;
 
@@ -11,9 +12,11 @@ using TicketShop.Data;
 namespace TicketShop.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260105151911_pretedit")]
+    partial class pretedit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -359,59 +362,6 @@ namespace TicketShop.Migrations
                     b.HasIndex("CategorieId");
 
                     b.ToTable("Evenimente");
-                });
-
-            modelBuilder.Entity("TicketShop.Models.FAQ", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Intrebare")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Raspuns")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("FAQs");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Intrebare = "retur",
-                            Raspuns = "Poți returna biletele cu maxim 24 de ore înainte de eveniment. Banii intră în cont în 3 zile."
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Intrebare = "contact",
-                            Raspuns = "Ne poți contacta la support@ticketshop.ro sau la telefon 0770.123.456."
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Intrebare = "buna",
-                            Raspuns = "Bună! Sunt asistentul tău roz. Întreabă-mă despre bilete, cont sau evenimente! 💕"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Intrebare = "cont",
-                            Raspuns = "Poți crea un cont gratuit apăsând pe butonul Register din dreapta sus."
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Intrebare = "locatie",
-                            Raspuns = "Locația evenimentului este scrisă pe biletul electronic pe care îl primești pe email."
-                        });
                 });
 
             modelBuilder.Entity("TicketShop.Models.Review", b =>
