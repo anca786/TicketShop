@@ -20,7 +20,7 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
 
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1 align-items-center">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Acasă</a>
                         </li>
@@ -46,6 +46,20 @@
                                 </ul>
                             </li>
                         }
+                       
+                        <li class="nav-item ms-auto">
+                            <a class="nav-link text-dark fw-bold position-relative" asp-controller="Cos" asp-action="Index">
+                                <i class="bi bi-cart3 fs-5"></i>
+                                <span class="d-none d-sm-inline">Coșul meu</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-controller="Wishlist" asp-action="Index">
+                                <i class="bi bi-heart" style="color: hotpink;"></i>
+                                <span class="d-none d-sm-inline">Wishlist</span>
+                            </a>
+                        </li>
+
                     </ul>
 
                     <ul class="navbar-nav">
@@ -71,10 +85,10 @@
                         else
                         {
                             <li class="nav-item">
-                                <a class="btn btn-outline-primary me-2" asp-controller="Account" asp-action="Login">Login</a>
+                                <a class="btn btn-outline-primary me-2 btn-sm" asp-controller="Account" asp-action="Login">Login</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-primary" asp-controller="Account" asp-action="Register">Înregistrare</a>
+                                <a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Register">Înregistrare</a>
                             </li>
                         }
                     </ul>
@@ -121,5 +135,173 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <button id="chat-toggle-btn" onclick="toggleChat()">
+        <i class="bi bi-chat-heart-fill"></i> Asistență
+    </button>
+
+    <div id="chat-window" class="card shadow-lg">
+
+        <div class="card-header text-white d-flex justify-content-between align-items-center"
+             style="background: linear-gradient(45deg, #ff80ab, #ff4081);">
+            <span><i class="bi bi-robot"></i> Asistent TicketShop</span>
+            <button type="button" class="btn-close btn-close-white" onclick="toggleChat()"></button>
+        </div>
+
+        <div class="card-body" id="chat-messages">
+            <div class="chat-bubble bot-message">
+                Bună! 🌸 Sunt aici să te ajut. Întreabă-mă ceva!
+            </div>
+        </div>
+
+        <div class="card-footer bg-white">
+            <div class="input-group">
+                <input type="text" id="chat-input" class="form-control" placeholder="Scrie aici..." onkeypress="handleEnter(event)">
+                <button class="btn btn-pink text-white" onclick="sendMessage()" style="background-color: #ff4081;">
+                    <i class="bi bi-send-fill"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <style>
+        /* Butonul Plutitor */
+        #chat-toggle-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #ff4081;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.4);
+            cursor: pointer;
+            z-index: 9999;
+            transition: transform 0.3s;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+            #chat-toggle-btn:hover {
+                transform: scale(1.1);
+                background-color: #f50057;
+            }
+
+        /* Fereastra de Chat */
+        #chat-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 450px;
+            display: none;
+            z-index: 9999;
+            border-radius: 20px;
+            border: none;
+            overflow: hidden;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        /* AICI AM PUS @@ PENTRU CĂ SUNTEM ÎN RAZOR VIEW */
+        @@keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Zona de mesaje */
+        #chat-messages {
+            height: 320px;
+            overflow-y: auto;
+            background-color: #fce4ec;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Bule de chat */
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .bot-message {
+            background-color: #ffffff;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .user-message {
+            background-color: #ff80ab;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+    </style>
+
+    <script>
+        function toggleChat() {
+            var chatWindow = document.getElementById("chat-window");
+            if (chatWindow.style.display === "none" || chatWindow.style.display === "") {
+                chatWindow.style.display = "block";
+            } else {
+                chatWindow.style.display = "none";
+            }
+        }
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        function sendMessage() {
+            var input = document.getElementById("chat-input");
+            var message = input.value.trim();
+            var messagesArea = document.getElementById("chat-messages");
+
+            if (message === "") return;
+
+            // 1. Adăugăm mesajul userului în interfață
+            var userBubble = document.createElement("div");
+            userBubble.className = "chat-bubble user-message";
+            userBubble.innerText = message;
+            messagesArea.appendChild(userBubble);
+
+            // Curățăm inputul
+            input.value = "";
+            messagesArea.scrollTop = messagesArea.scrollHeight; // Scroll jos
+
+            // 2. Trimitem la server (Controller)
+            fetch('/Chat/GetRaspuns', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 3. Afișăm răspunsul botului
+                var botBubble = document.createElement("div");
+                botBubble.className = "chat-bubble bot-message";
+                botBubble.innerText = data.response;
+                messagesArea.appendChild(botBubble);
+
+                messagesArea.scrollTop = messagesArea.scrollHeight;
+            })
+            .catch(error => console.error('Eroare:', error));
+        }
+    </script>
 </body>
 </html>

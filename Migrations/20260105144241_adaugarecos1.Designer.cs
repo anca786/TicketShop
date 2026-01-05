@@ -12,8 +12,8 @@ using TicketShop.Data;
 namespace TicketShop.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20251209225859_AdaugareValidari")]
-    partial class AdaugareValidari
+    [Migration("20260105144241_adaugarecos1")]
+    partial class adaugarecos1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace TicketShop.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("BiletCos", b =>
-                {
-                    b.Property<int>("BileteId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CosId")
-                        .HasColumnType("int");
-
-                    b.HasKey("BileteId", "CosId");
-
-                    b.HasIndex("CosId");
-
-                    b.ToTable("BiletCos");
-                });
 
             modelBuilder.Entity("EvenimentWishlist", b =>
                 {
@@ -200,6 +185,9 @@ namespace TicketShop.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("CosId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -252,6 +240,8 @@ namespace TicketShop.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CosId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -271,23 +261,28 @@ namespace TicketShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int?>("CosId")
+                        .HasColumnType("int");
+
                     b.Property<int>("EvenimentId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("Pret")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<string>("UtilizatorId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<bool>("Vandut")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EvenimentId");
+                    b.HasIndex("ApplicationUserId");
 
-                    b.HasIndex("UtilizatorId");
+                    b.HasIndex("CosId");
+
+                    b.HasIndex("EvenimentId");
 
                     b.ToTable("Bilete");
                 });
@@ -320,12 +315,9 @@ namespace TicketShop.Migrations
 
                     b.Property<string>("UtilizatorId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UtilizatorId")
-                        .IsUnique();
 
                     b.ToTable("Cosuri");
                 });
@@ -424,21 +416,6 @@ namespace TicketShop.Migrations
                     b.ToTable("Wishlists");
                 });
 
-            modelBuilder.Entity("BiletCos", b =>
-                {
-                    b.HasOne("TicketShop.Models.Bilet", null)
-                        .WithMany()
-                        .HasForeignKey("BileteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TicketShop.Models.Cos", null)
-                        .WithMany()
-                        .HasForeignKey("CosId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("EvenimentWishlist", b =>
                 {
                     b.HasOne("TicketShop.Models.Eveniment", null)
@@ -505,32 +482,37 @@ namespace TicketShop.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TicketShop.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("TicketShop.Models.Cos", "Cos")
+                        .WithMany()
+                        .HasForeignKey("CosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cos");
+                });
+
             modelBuilder.Entity("TicketShop.Models.Bilet", b =>
                 {
+                    b.HasOne("TicketShop.Models.ApplicationUser", null)
+                        .WithMany("Bilete")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("TicketShop.Models.Cos", "Cos")
+                        .WithMany("Bilete")
+                        .HasForeignKey("CosId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("TicketShop.Models.Eveniment", "Eveniment")
                         .WithMany("Bilete")
                         .HasForeignKey("EvenimentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TicketShop.Models.ApplicationUser", "Utilizator")
-                        .WithMany("Bilete")
-                        .HasForeignKey("UtilizatorId");
+                    b.Navigation("Cos");
 
                     b.Navigation("Eveniment");
-
-                    b.Navigation("Utilizator");
-                });
-
-            modelBuilder.Entity("TicketShop.Models.Cos", b =>
-                {
-                    b.HasOne("TicketShop.Models.ApplicationUser", "Utilizator")
-                        .WithOne("Cos")
-                        .HasForeignKey("TicketShop.Models.Cos", "UtilizatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Utilizator");
                 });
 
             modelBuilder.Entity("TicketShop.Models.Eveniment", b =>
@@ -578,9 +560,6 @@ namespace TicketShop.Migrations
                 {
                     b.Navigation("Bilete");
 
-                    b.Navigation("Cos")
-                        .IsRequired();
-
                     b.Navigation("Reviews");
 
                     b.Navigation("Wishlist")
@@ -590,6 +569,11 @@ namespace TicketShop.Migrations
             modelBuilder.Entity("TicketShop.Models.Categorie", b =>
                 {
                     b.Navigation("Evenimente");
+                });
+
+            modelBuilder.Entity("TicketShop.Models.Cos", b =>
+                {
+                    b.Navigation("Bilete");
                 });
 
             modelBuilder.Entity("TicketShop.Models.Eveniment", b =>

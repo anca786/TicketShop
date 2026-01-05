@@ -5,9 +5,16 @@
 }
 
 <div class="container py-4">
+    @if (TempData["Mesaj"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Mesaj"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="mb-0">Gestionează Evenimente</h2>
-
         <a asp-controller="Evenimente" asp-action="New" class="btn btn-success">
             <i class="bi bi-plus-circle"></i> Adaugă Eveniment
         </a>
@@ -34,6 +41,16 @@
                     <td>@e.Data.ToString("dd.MM.yyyy HH:mm")</td>
                     <td>@e.Locatie</td>
                     <td class="text-end">
+
+                        <button type="button"
+                                class="btn btn-info btn-sm me-2 text-white"
+                                data-bs-toggle="modal"
+                                data-bs-target="#generateTicketsModal"
+                                data-id="@e.Id"
+                                data-name="@e.Nume">
+                            <i class="bi bi-ticket-perforated"></i> Generează Bilete
+                        </button>
+
                         <a asp-controller="Evenimente"
                            asp-action="Edit"
                            asp-route-id="@e.Id"
@@ -56,7 +73,40 @@
     </table>
 </div>
 
-<!-- Formular + Modal pentru confirmare ștergere eveniment -->
+<form asp-controller="Evenimente" asp-action="GenereazaBilete" method="post">
+    <div class="modal fade" id="generateTicketsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-ticket-perforated-fill"></i> Generează Bilete
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="id" id="generateEventId" />
+
+                    <p>Generează bilete pentru: <strong id="generateEventName"></strong></p>
+
+                    <div class="mb-3">
+                        <label class="form-label">Număr de bilete:</label>
+                        <input type="number" name="numarBilete" class="form-control" value="50" min="1" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Preț per bilet (RON):</label>
+                        <input type="number" name="pret" class="form-control" value="100" step="0.01" min="1" required />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anulează</button>
+                    <button type="submit" class="btn btn-info text-white">Generează</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
 <form id="deleteEventForm" asp-controller="Evenimente" asp-action="Delete" method="post">
     @Html.AntiForgeryToken()
     <input type="hidden" name="id" id="deleteEventId" />
@@ -64,36 +114,23 @@
     <div class="modal fade" id="deleteEventModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-
                 <div class="modal-header">
                     <h5 class="modal-title text-danger">
                         <i class="bi bi-exclamation-triangle-fill"></i> Șterge Eveniment
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Închide"></button>
                 </div>
-
                 <div class="modal-body text-center">
-                    <!-- imagine funny în wwwroot/imagini/pisicut.png -->
-                    <img src="~/imagini/pisicut.png" alt="Funny warning" class="img-fluid mb-3" />
-
+                    <img src="~/imagini/pisicut.png" alt="Funny warning" class="img-fluid mb-3" style="max-height: 150px;" />
                     <p class="fw-bold mb-1">
-                        Sigur vrei să ștergi evenimentul
-                        <span id="deleteEventName" class="text-danger"></span>?
+                        Sigur vrei să ștergi evenimentul <span id="deleteEventName" class="text-danger"></span>?
                     </p>
-                    <p class="text-muted small">
-                        Categoria asociată va rămâne, se șterge doar acest eveniment.
-                    </p>
+                    <p class="text-muted small">Se șterge doar evenimentul, nu și categoria.</p>
                 </div>
-
                 <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        Nu, păstrează-l
-                    </button>
-                    <button type="submit" class="btn btn-danger">
-                        Da, șterge-l
-                    </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nu, păstrează-l</button>
+                    <button type="submit" class="btn btn-danger">Da, șterge-l</button>
                 </div>
-
             </div>
         </div>
     </div>
@@ -101,14 +138,25 @@
 
 @section Scripts {
     <script>
+        // Script pentru Modalul de Ștergere
         const deleteEventModal = document.getElementById('deleteEventModal');
         deleteEventModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
             const id = button.getAttribute('data-id');
             const name = button.getAttribute('data-name');
-
             document.getElementById('deleteEventId').value = id;
             document.getElementById('deleteEventName').textContent = '"' + name + '"';
+        });
+
+        // Script pentru Modalul de Generare Bilete (NOU)
+        const generateTicketsModal = document.getElementById('generateTicketsModal');
+        generateTicketsModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            const name = button.getAttribute('data-name');
+
+            document.getElementById('generateEventId').value = id;
+            document.getElementById('generateEventName').textContent = name;
         });
     </script>
 }

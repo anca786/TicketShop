@@ -1,45 +1,57 @@
-﻿@model IEnumerable<TicketShop.Models.Eveniment>
-
+﻿
 @{
-    ViewData["Title"] = "Acasă";
+    ViewData["Title"] = "Home Page";
 }
 
-<div class="p-5 mb-4 bg-light rounded-3 text-center border">
-    <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold text-primary">Bine ai venit la TicketShop!</h1>
-        <p class="col-md-8 fs-4 mx-auto">Găsește bilete la cele mai tari concerte, meciuri și piese de teatru din orașul tău.</p>
-        <a asp-controller="Evenimente" asp-action="Index" class="btn btn-primary btn-lg">Vezi toate evenimentele</a>
+<div class="text-center py-4">
+    <h1 class="display-4 fw-bold">Bun venit la TicketShop!</h1>
+    <p class="lead">Găsește bilete la cele mai tari evenimente din oraș.</p>
+
+    <div class="row justify-content-center mt-4">
+        <div class="col-md-6">
+            <form asp-action="Index" method="get">
+                <div class="input-group mb-3 shadow-sm">
+                    <input type="text"
+                           name="cautare"
+                           class="form-control form-control-lg"
+                           placeholder="Caută concert, meci, artist..."
+                           value="@ViewData["CautareCurenta"]">
+
+                    <button class="btn btn-primary px-4" type="submit">
+                        <i class="bi bi-search"></i> Caută
+                    </button>
+
+                    @if (ViewData["CautareCurenta"] != null)
+                    {
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                    }
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<div class="container">
-    <h3 class="mb-4 border-bottom pb-2">Evenimente Recomandate</h3>
+@if (Model.Count== 0)
+{
+    <div class="text-center mt-5">
+        <h3 class="text-muted">Nu am găsit niciun eveniment pentru "@ViewData["CautareCurenta"]"</h3>
+        <a asp-action="Index" class="btn btn-link">Vezi toate evenimentele</a>
+    </div>
+}
 
-    <div class="row">
-        @foreach (var item in Model)
-        {
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
-                    <img src="@(string.IsNullOrEmpty(item.ImagineUrl) ? "https://placehold.co/600x400?text=Fara+Imagine" : item.ImagineUrl)"
-                         class="card-img-top"
-                         alt="@item.Nume"
-                         style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="badge bg-info text-dark">@item.Categorie?.Nume</span>
-                            <small class="text-muted">@item.Data.ToString("dd MMM yyyy")</small>
-                        </div>
-
-                        <h5 class="card-title">@item.Nume</h5>
-                        <p class="card-text text-truncate">@item.Descriere</p>
-                        <p class="card-text"><i class="bi bi-geo-alt-fill text-danger"></i> @item.Locatie</p>
-                    </div>
-
-                    <div class="card-footer bg-white border-top-0 d-grid">
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-primary">Vezi Detalii</a>
-                    </div>
+<div class="row mt-4">
+    @foreach (var item in Model)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <img src="@(string.IsNullOrEmpty(item.ImagineUrl) ? "https://placehold.co/600x400" : item.ImagineUrl)" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title">@item.Nume</h5>
+                    <a asp-controller="Home" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Detalii</a>
                 </div>
             </div>
-        }
-    </div>
+        </div>
+    }
 </div>

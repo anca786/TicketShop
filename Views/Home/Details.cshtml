@@ -2,53 +2,160 @@
 
 @{
     ViewData["Title"] = "Detalii Eveniment";
+    // Luăm valorile direct din Controller (unde ai zis că mergea bine)
+    bool isInWishlist = ViewBag.IsWishlisted != null && (bool)ViewBag.IsWishlisted;
+    int stoc = ViewBag.Stoc != null ? (int)ViewBag.Stoc : 0;
 }
 
 <div class="container mt-5">
+
+    @if (TempData["MesajEroare"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-4">
+            <i class="bi bi-exclamation-triangle-fill"></i> @TempData["MesajEroare"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["MesajSucces"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show mb-4">
+            <i class="bi bi-check-circle-fill"></i> @TempData["MesajSucces"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
     <a asp-action="Index" class="btn btn-outline-secondary mb-4">
         &larr; Înapoi la Evenimente
     </a>
 
-    <div class="row shadow-lg p-3 mb-5 bg-body rounded">
-        <div class="col-md-6">
-            <img src="@(string.IsNullOrEmpty(Model.ImagineUrl) ? "https://placehold.co/600x400?text=Fara+Imagine" : Model.ImagineUrl)"
-                 class="img-fluid rounded"
-                 alt="@Model.Nume"
-                 style="width: 100%; height: 400px; object-fit: cover;">
-        </div>
+    <div class="card shadow-lg border-0 overflow-hidden" style="border-radius: 20px;">
+        <div class="row g-0">
 
-        <div class="col-md-6 d-flex flex-column justify-content-center">
-            <div class="mb-2">
-                <span class="badge bg-primary fs-6">@Model.Categorie?.Nume</span>
+            <div class="col-md-6">
+                <img src="@(string.IsNullOrEmpty(Model.ImagineUrl) ? "https://placehold.co/600x400?text=Fara+Imagine" : Model.ImagineUrl)"
+                     class="img-fluid h-100 w-100"
+                     alt="@Model.Nume"
+                     style="object-fit: cover; min-height: 400px;">
             </div>
 
-            <h1 class="display-5 fw-bold mb-3">@Model.Nume</h1>
+            <div class="col-md-6 bg-white">
+                <div class="card-body p-5 d-flex flex-column h-100">
 
-            <p class="lead text-muted">@Model.Descriere</p>
+                    <div class="mb-2">
+                        <span class="badge bg-primary fs-6">@Model.Categorie?.Nume</span>
+                    </div>
 
-            <hr class="my-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h1 class="display-5 fw-bold mb-0">@Model.Nume</h1>
 
-            <div class="d-flex align-items-center mb-3">
-                <i class="bi bi-calendar-event fs-4 text-primary me-3"></i>
-                <div>
-                    <h6 class="mb-0">Data și Ora</h6>
-                    <small>@Model.Data.ToString("dd MMMM yyyy, ora HH:mm")</small>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <button class="btn btn-wishlist p-0 border-0 bg-transparent"
+                                    onclick="toggleWishlist(this, @Model.Id)"
+                                    title="Adaugă la favorite">
+                                <i class="bi @(isInWishlist ? "bi-heart-fill heart-active" : "bi-heart text-dark") fs-2"
+                                   style="@(isInWishlist ? "color: hotpink;" : "")"></i>
+                            </button>
+                        }
+                    </div>
+
+                    <p class="lead text-muted">@Model.Descriere</p>
+                    <hr class="my-4 opacity-25">
+
+                    <div class="mb-3">
+                        <div class="d-flex align-items-center mb-3">
+                            <i class="bi bi-calendar-event fs-4 text-primary me-3"></i>
+                            <div>
+                                <small class="text-muted text-uppercase fw-bold">Data și Ora</small>
+                                <div class="fs-5 fw-bold">@Model.Data.ToString("dd MMMM yyyy, HH:mm")</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-geo-alt-fill fs-4 text-danger me-3"></i>
+                            <div>
+                                <small class="text-muted text-uppercase fw-bold">Locație</small>
+                                <div class="fs-5 fw-bold">@Model.Locatie</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-auto p-4 rounded shadow-sm" style="background-color: #f8f9fa; border-left: 5px solid hotpink;">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div>
+                                <small class="text-muted text-uppercase fw-bold">Preț</small>
+                                <h2 class="text-success fw-bold m-0">@Model.Pret.ToString("0.00") RON</h2>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted">Disponibilitate:</small>
+                                @if (stoc > 0)
+                                {
+                                    <h5 class="text-primary fw-bold m-0">@stoc bilete</h5>
+                                }
+                                else
+                                {
+                                    <h5 class="text-muted fw-bold m-0">Stoc Epuizat</h5>
+                                }
+                            </div>
+                        </div>
+
+                        @if (stoc > 0)
+                        {
+                            <a asp-controller="Cos" asp-action="Adauga" asp-route-evenimentId="@Model.Id"
+                               class="btn btn-success btn-lg w-100 fw-bold rounded-pill text-white">
+                                <i class="bi bi-cart-plus-fill me-2"></i> Adaugă în Coș
+                            </a>
+                        }
+                        else
+                        {
+                            <button class="btn btn-secondary btn-lg w-100 fw-bold rounded-pill" disabled>Sold Out</button>
+                        }
+                    </div>
+
                 </div>
             </div>
-
-            <div class="d-flex align-items-center mb-4">
-                <i class="bi bi-geo-alt fs-4 text-danger me-3"></i>
-                <div>
-                    <h6 class="mb-0">Locație</h6>
-                    <small>@Model.Locatie</small>
-                </div>
-            </div>
-
-            <h3 class="text-success mb-4">Preț: 150 RON</h3>
-
-            <button class="btn btn-success btn-lg w-100">
-                <i class="bi bi-cart-plus"></i> Adaugă în Coș
-            </button>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        function toggleWishlist(btn, evenimentId) {
+            // Găsim iconița (tag-ul <i>) din buton
+            var icon = btn.querySelector("i");
+
+            // Facem cererea către server
+            fetch('/Wishlist/Toggle?evenimentId=' + evenimentId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' }
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Eroare rețea');
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    if (data.isAdded) {
+                        // === CAZ 1: ADĂUGAT (ROZ) ===
+                        icon.className = "bi bi-heart-fill fs-2"; // Clasa pentru inimă plină
+                        icon.style.color = "hotpink"; // Forțăm culoarea
+
+                        // Mică animație
+                        icon.style.transition = "transform 0.2s";
+                        icon.style.transform = "scale(1.3)";
+                        setTimeout(() => icon.style.transform = "scale(1)", 200);
+                    } else {
+                        // === CAZ 2: SCOS (NEGRU/GOL) ===
+                        icon.className = "bi bi-heart fs-2 text-dark"; // Clasa pentru inimă goală
+                        icon.style.color = ""; // Resetăm culoarea
+                    }
+                } else {
+                    // Dacă serverul zice "success: false" (ex: nu e logat)
+                    alert(data.message || "A apărut o eroare!");
+                }
+            })
+            .catch(error => console.error('Eroare:', error));
+        }
+    </script>
+}

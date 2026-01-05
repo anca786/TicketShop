@@ -5,23 +5,24 @@
 namespace TicketShop.Migrations
 {
     /// <inheritdoc />
-    public partial class AdaugareImagineUrlEveniment : Migration
+    public partial class pretedit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<string>(
-                name: "ImagineUrl",
+            migrationBuilder.AddColumn<decimal>(
+                name: "Pret",
                 table: "Evenimente",
-                type: "nvarchar(max)",
-                nullable: true);
+                type: "decimal(18,2)",
+                nullable: false,
+                defaultValue: 0m);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "ImagineUrl",
+                name: "Pret",
                 table: "Evenimente");
         }
     }
