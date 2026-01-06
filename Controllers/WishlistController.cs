@@ -50,14 +50,27 @@ namespace TicketShop.Controllers
                 .Include(w => w.Evenimente)
                 .FirstOrDefaultAsync(w => w.UtilizatorId == user.Id);
 
+            // === AICI ERA PROBLEMA ===
             if (wishlist == null)
             {
-                wishlist = new Wishlist { UtilizatorId = user.Id };
+                wishlist = new Wishlist
+                {
+                    UtilizatorId = user.Id,
+                    // FIX: Trebuie să creăm lista goală, altfel e NULL și dă eroare
+                    Evenimente = new List<Eveniment>()
+                };
                 _context.Wishlists.Add(wishlist);
             }
 
+            // Măsură de siguranță suplimentară:
+            if (wishlist.Evenimente == null)
+            {
+                wishlist.Evenimente = new List<Eveniment>();
+            }
+            // =========================
+
             var eveniment = await _context.Evenimente.FindAsync(evenimentId);
-            if (eveniment == null) return Json(new { success = false });
+            if (eveniment == null) return Json(new { success = false, message = "Eveniment inexistent" });
 
             bool isAdded = false;
 

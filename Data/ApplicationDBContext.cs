@@ -11,7 +11,6 @@ namespace TicketShop.Data
         {
         }
 
-        // Asigură-te că ai liniile astea
         public DbSet<Eveniment> Evenimente { get; set; }
         public DbSet<Categorie> Categorii { get; set; }
         public DbSet<Bilet> Bilete { get; set; }

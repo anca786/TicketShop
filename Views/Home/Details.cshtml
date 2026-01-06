@@ -119,6 +119,104 @@
     </div>
 </div>
 
+<div class="container mt-5 mb-5 border-top pt-4">
+    <h3 class="fw-bold mb-4">Recenzii și Păreri</h3>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div class="card shadow-sm border-0 mb-4 bg-light">
+            <div class="card-body p-4">
+                <h5 class="card-title mb-3">Lasă o recenzie</h5>
+                <form asp-controller="Reviews" asp-action="Adauga" method="post">
+                    <input type="hidden" name="EvenimentId" value="@Model.Id" />
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Nota ta:</label>
+                        <div class="rating-input">
+                            <select name="Rating" class="form-select w-auto d-inline-block">
+                                <option value="5">⭐⭐⭐⭐⭐ (Excelent)</option>
+                                <option value="4">⭐⭐⭐⭐ (Foarte bun)</option>
+                                <option value="3">⭐⭐⭐ (Bun)</option>
+                                <option value="2">⭐⭐ (Slăbuț)</option>
+                                <option value="1">⭐ (Nu recomand)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Comentariu:</label>
+                        <textarea name="Continut" class="form-control" rows="3" placeholder="Minim 10 caractere..." required minlength="10" maxlength="500"></textarea>
+                        <div class="form-text">Între 10 și 500 de caractere.</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Postează</button>
+                </form>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            <a href="/Identity/Account/Login">Autentifică-te</a> pentru a lăsa o recenzie.
+        </div>
+    }
+
+    @if (Model.Reviews != null && Model.Reviews.Any())
+    {
+        @foreach (var review in Model.Reviews.OrderByDescending(r => r.DataPostarii))
+        {
+            <div class="card mb-3 border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <strong class="me-2">@review.Utilizator?.UserName</strong>
+                            <span class="text-muted small">@review.DataPostarii.ToString("dd MMM yyyy, HH:mm")</span>
+                        </div>
+                        <div class="text-warning">
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i <= review.Rating)
+                                {
+                                    <i class="bi bi-star-fill"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-star"></i>
+                                }
+                            }
+                        </div>
+                    </div>
+
+                    <p class="card-text text-dark">@review.Continut</p>
+
+                    @if (User.Identity.IsAuthenticated && (User.Identity.Name == review.Utilizator?.UserName || User.IsInRole("Admin")))
+                    {
+                        <div class="d-flex gap-2 mt-3">
+                            @if (User.Identity.Name == review.Utilizator?.UserName)
+                            {
+                                <a asp-controller="Reviews" asp-action="Edit" asp-route-id="@review.Id" class="btn btn-sm btn-outline-warning">
+                                    <i class="bi bi-pencil"></i> Editează
+                                </a>
+                            }
+
+                            <form asp-controller="Reviews" asp-action="Sterge" method="post">
+                                <input type="hidden" name="id" value="@review.Id" />
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Sigur ștergi?')">
+                                    <i class="bi bi-trash"></i> Șterge
+                                </button>
+                            </form>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="text-muted text-center py-3">Nu există recenzii încă. Fii primul care scrie!</p>
+    }
+</div>
+
 @section Scripts {
     <script>
         function toggleWishlist(btn, evenimentId) {
