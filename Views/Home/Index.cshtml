@@ -46,7 +46,7 @@
     {
         <div class="col-md-4 mb-4">
             <div class="card h-100 shadow-sm">
-                <img src="@(string.IsNullOrEmpty(item.ImagineUrl) ? "https://placehold.co/600x400" : item.ImagineUrl)" class="card-img-top" alt="...">
+                <img src="@(string.IsNullOrEmpty(item.ImagineUrl) ? "https://placehold.co/600x400" : item.ImagineUrl)" class="card-img-top" alt="@item.Nume" style="height: 250px; object-fit: cover; width: 100%;">
                 <div class="card-body">
                     <h5 class="card-title">@item.Nume</h5>
                     <a asp-controller="Evenimente" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Detalii</a>

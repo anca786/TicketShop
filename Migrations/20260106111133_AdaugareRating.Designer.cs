@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TicketShop.Data;
 
@@ -11,9 +12,11 @@ using TicketShop.Data;
 namespace TicketShop.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260106111133_AdaugareRating")]
+    partial class AdaugareRating
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace TicketShop.Migrations
 
                     b.HasIndex("WishlistId");
 
-                    b.ToTable("EvenimentWishlist", (string)null);
+                    b.ToTable("EvenimentWishlist");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -281,7 +284,7 @@ namespace TicketShop.Migrations
 
                     b.HasIndex("EvenimentId");
 
-                    b.ToTable("Bilete", (string)null);
+                    b.ToTable("Bilete");
                 });
 
             modelBuilder.Entity("TicketShop.Models.Categorie", b =>
@@ -299,7 +302,7 @@ namespace TicketShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categorii", (string)null);
+                    b.ToTable("Categorii");
                 });
 
             modelBuilder.Entity("TicketShop.Models.Cos", b =>
@@ -316,7 +319,7 @@ namespace TicketShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cosuri", (string)null);
+                    b.ToTable("Cosuri");
                 });
 
             modelBuilder.Entity("TicketShop.Models.Eveniment", b =>
@@ -370,7 +373,7 @@ namespace TicketShop.Migrations
 
                     b.HasIndex("CategorieId");
 
-                    b.ToTable("Evenimente", (string)null);
+                    b.ToTable("Evenimente");
                 });
 
             modelBuilder.Entity("TicketShop.Models.FAQ", b =>
@@ -391,7 +394,7 @@ namespace TicketShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FAQs", (string)null);
+                    b.ToTable("FAQs");
 
                     b.HasData(
                         new
@@ -458,7 +461,7 @@ namespace TicketShop.Migrations
 
                     b.HasIndex("UtilizatorId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("TicketShop.Models.Wishlist", b =>
@@ -478,7 +481,7 @@ namespace TicketShop.Migrations
                     b.HasIndex("UtilizatorId")
                         .IsUnique();
 
-                    b.ToTable("Wishlists", (string)null);
+                    b.ToTable("Wishlists");
                 });
 
             modelBuilder.Entity("EvenimentWishlist", b =>

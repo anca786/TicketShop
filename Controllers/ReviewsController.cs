@@ -38,6 +38,7 @@ public class ReviewsController : Controller
             _context.Reviews.Add(review);
             await _context.SaveChangesAsync();
             TempData["MesajSucces"] = "Review-ul a fost adăugat!";
+            await ActualizeazaRatingEveniment(review.EvenimentId);
         }
         else
         {
@@ -64,9 +65,11 @@ public class ReviewsController : Controller
         // Verificăm dacă ești proprietarul sau Admin
         if (review.UtilizatorId == userId || User.IsInRole("Admin"))
         {
+            int evenimentId = review.EvenimentId; // Ținem minte ID-ul evenimentului
             _context.Reviews.Remove(review);
             await _context.SaveChangesAsync();
             TempData["MesajSucces"] = "Review șters cu succes.";
+            await ActualizeazaRatingEveniment(evenimentId);
         }
         else
         {
@@ -119,10 +122,42 @@ public class ReviewsController : Controller
         {
             _context.Update(reviewOriginal);
             await _context.SaveChangesAsync();
+            await ActualizeazaRatingEveniment(reviewOriginal.EvenimentId);
             TempData["MesajSucces"] = "Review modificat cu succes!";
             return RedirectToAction("Details", "Evenimente", new { id = reviewOriginal.EvenimentId });
+
         }
 
         return View(reviewActualizat);
+    }
+
+    private async Task ActualizeazaRatingEveniment(int evenimentId)
+    {
+        // 1. Găsim evenimentul
+        var eveniment = await _context.Evenimente
+            .Include(e => e.Reviews)
+            .FirstOrDefaultAsync(e => e.Id == evenimentId);
+
+        if (eveniment != null)
+        {
+            // 2. Verificăm dacă are recenzii
+            if (eveniment.Reviews != null && eveniment.Reviews.Any())
+            {
+                // 3. Calculăm media (Average)
+                double media = eveniment.Reviews.Average(r => r.Rating);
+
+                // Opțional: Rotunjim la 2 zecimale (ex: 4.66)
+                eveniment.RatingMediu = Math.Round(media, 2);
+            }
+            else
+            {
+                // Dacă s-a șters ultima recenzie, resetăm la 0
+                eveniment.RatingMediu = 0;
+            }
+
+            // 4. Salvăm modificarea în Event
+            _context.Update(eveniment);
+            await _context.SaveChangesAsync();
+        }
     }
 }

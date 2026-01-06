@@ -2,7 +2,9 @@
 @using TicketShop.Models
 
 @{
-    ViewData["Title"] = "Adaugă Eveniment";
+    // Schimbăm titlul în funcție de rol
+    bool isAdmin = User.IsInRole("Admin");
+    ViewData["Title"] = isAdmin ? "Adaugă Eveniment" : "Propune Eveniment";
     var categorii = ViewBag.Categorii as List<Categorie>;
 }
 
@@ -12,7 +14,7 @@
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
                     <h3 class="mb-0">
-                        <i class="bi bi-plus-circle"></i> Adaugă Eveniment Nou
+                        <i class="bi bi-plus-circle"></i> @ViewData["Title"]
                     </h3>
                 </div>
                 <div class="card-body">
@@ -26,14 +28,21 @@
 
                         <div class="mb-3">
                             <label asp-for="Descriere" class="form-label fw-bold"></label>
-                            <textarea asp-for="Descriere" class="form-control"></textarea>
+                            <textarea asp-for="Descriere" class="form-control" rows="3"></textarea>
                             <span asp-validation-for="Descriere" class="text-danger"></span>
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Data" class="form-label fw-bold"></label>
-                            <input asp-for="Data" type="datetime-local" class="form-control" />
-                            <span asp-validation-for="Data" class="text-danger"></span>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Data" class="form-label fw-bold"></label>
+                                <input asp-for="Data" type="datetime-local" class="form-control" />
+                                <span asp-validation-for="Data" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Pret" class="form-label fw-bold">Preț (RON)</label>
+                                <input asp-for="Pret" class="form-control" type="number" step="0.01" min="0" />
+                                <span asp-validation-for="Pret" class="text-danger"></span>
+                            </div>
                         </div>
 
                         <div class="mb-3">
@@ -41,14 +50,9 @@
                             <input asp-for="Locatie" class="form-control" />
                             <span asp-validation-for="Locatie" class="text-danger"></span>
                         </div>
-                        <div class="mb-3">
-                            <label asp-for="Pret" class="form-label">Preț (RON)</label>
-                            <input asp-for="Pret" class="form-control" type="number" step="0.01" min="0" />
-                            <span asp-validation-for="Pret" class="text-danger"></span>
-                        </div>
 
                         <div class="mb-3">
-                            <label asp-for="ImagineFisier" class="form-label fw-bold">Afis Eveniment</label>
+                            <label asp-for="ImagineFisier" class="form-label fw-bold">Afiș Eveniment</label>
                             <input asp-for="ImagineFisier" class="form-control" type="file" accept=".png,.jpg,.jpeg,.webp" />
                             <span asp-validation-for="ImagineFisier" class="text-danger"></span>
                         </div>
@@ -57,22 +61,39 @@
                             <label asp-for="CategorieId" class="form-label fw-bold">Categorie</label>
                             <select asp-for="CategorieId" class="form-select">
                                 <option value="">-- Alege Categoria --</option>
-                                @foreach (var c in categorii)
+                                @if (categorii != null)
                                 {
-                                    <option value="@c.Id">@c.Nume</option>
+                                    foreach (var c in categorii)
+                                    {
+                                        <option value="@c.Id">@c.Nume</option>
+                                    }
                                 }
                             </select>
                             <span asp-validation-for="CategorieId" class="text-danger"></span>
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">
-                            <a asp-controller="Evenimente" asp-action="AdminIndex" class="btn btn-secondary">
-                                Înapoi la listă
-                            </a>
+
+                            @if (isAdmin)
+                            {
+                                // Adminul se întoarce în panoul de control
+                                <a asp-controller="Evenimente" asp-action="AdminIndex" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Înapoi la Administrare
+                                </a>
+                            }
+                            else
+                            {
+                                // Colaboratorul se întoarce pe Homepage
+                                <a asp-controller="Evenimente" asp-action="Index" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left"></i> Înapoi la Site
+                                </a>
+                            }
+
                             <button type="submit" class="btn btn-success">
-                                Salvează Evenimentul
+                                <i class="bi bi-check-circle"></i> @(isAdmin ? "Publică Evenimentul" : "Trimite Propunerea")
                             </button>
                         </div>
+
                     </form>
                 </div>
             </div>

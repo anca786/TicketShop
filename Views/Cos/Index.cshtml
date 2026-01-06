@@ -58,6 +58,10 @@ else
     </table>
 
     <div class="text-end mt-4">
-        <button class="btn btn-success btn-lg">Finalizează Comanda</button>
+        <a asp-controller="Cos" asp-action="FinalizeazaComanda"
+           class="btn btn-success btn-lg shadow"
+           onclick="return confirm('Ești sigur că vrei să finalizezi comanda?');">
+            <i class="bi bi-check-circle-fill me-2"></i> Finalizează Comanda
+        </a>
     </div>
 }

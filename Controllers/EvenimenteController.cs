@@ -6,6 +6,7 @@ using TicketShop.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using static TicketShop.Models.Eveniment;
+using Microsoft.Data.SqlClient;
 
 public class EvenimenteController : Controller
 {
@@ -18,8 +19,15 @@ public class EvenimenteController : Controller
         _userManager = userManager;
     }
 
-    public async Task<IActionResult> Index(string searchString, int? categoryId)
+    public async Task<IActionResult> Index(string searchString, int? categoryId, string sortOrder)
     {
+        ViewData["CurrentSort"] = sortOrder;
+        ViewData["DateSortParm"] = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
+        ViewData["PriceSortParm"] = sortOrder == "Price" ? "price_desc" : "Price";
+        ViewData["RatingSortParm"] = sortOrder == "Rating" ? "rating_desc" : "Rating";
+        ViewData["CurrentFilter"] = searchString;
+        ViewData["CurrentCategory"] = categoryId;
+
         var evenimente = _context.Evenimente
             .Include(e => e.Categorie)
             .Where(e => e.Status == EventStatus.Approved)
@@ -35,9 +43,32 @@ public class EvenimenteController : Controller
             evenimente = evenimente.Where(e => e.CategorieId == categoryId);
         }
 
+        switch (sortOrder)
+        {
+            case "date_desc":
+                evenimente = evenimente.OrderByDescending(e => e.Data);
+                break;
+            case "Price":
+                evenimente = evenimente.OrderBy(e => e.Pret); // Preț mic -> mare
+                break;
+            case "price_desc":
+                evenimente = evenimente.OrderByDescending(e => e.Pret); // Preț mare -> mic
+                break;
+            case "Rating":
+                evenimente = evenimente.OrderBy(e => e.RatingMediu); // Rating mic -> mare
+                break;
+            case "rating_desc":
+                evenimente = evenimente.OrderByDescending(e => e.RatingMediu); // Cel mai popular (Rating mare -> mic)
+                break;
+            default:
+                // Implicit: Data cea mai apropiată (Ascendent)
+                evenimente = evenimente.OrderBy(e => e.Data);
+                break;
+        }
+
+
         ViewBag.Categorii = new SelectList(await _context.Categorii.ToListAsync(), "Id", "Nume", categoryId);
-        ViewData["CurrentFilter"] = searchString;
-        ViewData["CurrentCategory"] = categoryId;
+
 
         return View(await evenimente.ToListAsync());
     }
@@ -97,7 +128,7 @@ public class EvenimenteController : Controller
         return RedirectToAction(nameof(AdminIndex));
     }
 
-    [Authorize]
+    [Authorize(Roles = "Admin,Colaborator")]
     public async Task<IActionResult> New()
     {
         ViewBag.Categorii = await _context.Categorii.OrderBy(c => c.Nume).ToListAsync();
@@ -106,10 +137,18 @@ public class EvenimenteController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize(Roles = "Colaborator")]
+    [Authorize(Roles = "Admin,Colaborator")]
     public async Task<IActionResult> New(Eveniment eveniment)
     {
-        eveniment.Status = EventStatus.Pending;
+        if (User.IsInRole("Admin"))
+        {
+            eveniment.Status = EventStatus.Approved; // Sau EventStatus.Approved, depinde cum ai tu enum-ul
+        }
+        else
+        {
+            eveniment.Status = EventStatus.Pending;
+        }
+
         eveniment.OrganizatorId = _userManager.GetUserId(User);
 
         ModelState.Remove(nameof(Eveniment.Bilete));
@@ -157,14 +196,15 @@ public class EvenimenteController : Controller
 
         _context.Evenimente.Add(eveniment);
         await _context.SaveChangesAsync();
-        TempData["message"] = "Evenimentul a fost trimis spre aprobare!";
 
         if (User.IsInRole("Admin"))
         {
+            TempData["message"] = "Evenimentul a fost creat și publicat cu succes!";
             return RedirectToAction(nameof(AdminIndex));
         }
         else
         {
+            TempData["message"] = "Evenimentul a fost trimis spre aprobare!";
             return RedirectToAction(nameof(Index));
         }
     }

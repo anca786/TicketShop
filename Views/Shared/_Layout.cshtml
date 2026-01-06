@@ -43,7 +43,17 @@
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" asp-controller="Evenimente" asp-action="AdminIndex">Gestionează Evenimente</a></li>
                                     <li><a class="dropdown-item" asp-controller="Categorii" asp-action="AdminIndex">Gestionează Categorii</a></li>
+                                    <li><a class="dropdown-item" asp-controller="Users" asp-action="Index">Gestionează Utilizatori</a></li>
                                 </ul>
+                            </li>
+                        }
+
+                        @if (User.IsInRole("Colaborator"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-primary fw-bold" asp-controller="Evenimente" asp-action="New">
+                                    <i class="bi bi-plus-circle-fill"></i> Propune Eveniment
+                                </a>
                             </li>
                         }
                        
