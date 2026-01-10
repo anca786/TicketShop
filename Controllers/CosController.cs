@@ -44,6 +44,7 @@ public class CosController : Controller
         var user = await _userManager.GetUserAsync(User);
         if (user == null) return Challenge();
 
+
         // 1. Verificăm stocul (căutăm un bilet liber)
         var biletDisponibil = await _context.Bilete
             .FirstOrDefaultAsync(b => b.EvenimentId == evenimentId
@@ -82,6 +83,8 @@ public class CosController : Controller
         // 5. Redirecționăm corect la HOME
         return RedirectToAction("Details", "Home", new { id = evenimentId });
     }
+
+
     // Șterge din coș
     public async Task<IActionResult> Sterge(int biletId)
     {
@@ -98,5 +101,43 @@ public class CosController : Controller
             }
         }
         return RedirectToAction("Index");
+    }
+
+
+    [Authorize]
+    public async Task<IActionResult> FinalizeazaComanda()
+    {
+        var userId = _userManager.GetUserId(User);
+
+        // 1. Căutăm Coșul utilizatorului curent și includem Biletele din el
+        // Folosim _context.Cosuri pentru că așa se numește DbSet-ul tău
+        var cos = await _context.Cosuri
+            .Include(c => c.Bilete)
+            .FirstOrDefaultAsync(c => c.UtilizatorId == userId);
+
+        if (cos != null && cos.Bilete.Any())
+        {
+            // 2. Golim coșul
+            // Nu ștergem biletele (.Remove), ci doar le scoatem din coș (CosId = null)
+            foreach (var bilet in cos.Bilete)
+            {
+                bilet.CosId = null;
+                bilet.Vandut = true;
+                bilet.UserId = userId;
+            }
+
+            // 3. Salvăm modificările
+            await _context.SaveChangesAsync();
+
+            // 4. Setăm mesajul de succes
+            TempData["SuccessMessage"] = "Comanda a fost finalizată cu succes! Mulțumim.";
+        }
+        else
+        {
+            TempData["ErrorMessage"] = "Coșul tău este gol.";
+        }
+
+        // 5. Redirecționăm către prima pagină
+        return RedirectToAction("Index", "Home");
     }
 }

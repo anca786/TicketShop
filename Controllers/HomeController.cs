@@ -27,6 +27,7 @@ public class HomeController : Controller
     // 1. Pornim cu toate evenimentele (dar nu le aducem încã din bazã)
     var query = _context.Evenimente
         .Include(e => e.Categorie)
+        .Where(e => e.Status == EventStatus.Approved) 
         .AsQueryable();
 
     // 2. Aplicãm filtrul DOAR dacã utilizatorul a scris ceva
@@ -37,11 +38,17 @@ public class HomeController : Controller
                                  e.Locatie.Contains(cautare));
     }
 
+    query = query.Where(e => e.Data >= DateTime.Now);
     // 3. Ordonãm rezultatele (cele mai noi primele)
     query = query.OrderBy(e => e.Data);
 
     // Salvãm ce a cãutat userul ca sã-i rãmânã scris în cãsu?ã dupã refresh
     ViewData["CautareCurenta"] = cautare;
+
+    if (string.IsNullOrEmpty(cautare)) 
+    {
+        query = query.Take(3);
+    }
 
     // 4. Executãm interogarea ?i trimitem lista
     return View(await query.ToListAsync());
@@ -90,7 +97,7 @@ public class HomeController : Controller
         ViewBag.IsWishlisted = isWishlisted;
         // ---------------------------------------------------------
 
-        return View(eveniment);
+        return RedirectToAction("Details", "Evenimente", new { id = id });
     }
 
     public IActionResult Privacy()

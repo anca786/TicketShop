@@ -3,8 +3,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TicketShop.Models
 {
+    // stari posibile ale evenimentului
+        public enum EventStatus
+        {
+            Pending,   
+            Approved,  
+            Rejected  
+        }
     public class Eveniment
     {
+        
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Numele evenimentului este obligatoriu.")]
@@ -39,8 +47,16 @@ namespace TicketShop.Models
 
         // Relație 1:N cu Bilet și Review
         public ICollection<Bilet> Bilete { get; set; }
-        public ICollection<Review> Reviews { get; set; }
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
         [Column(TypeName = "decimal(18,2)")] // Formatare pentru bani
         public decimal Pret { get; set; }
+
+        public EventStatus Status { get; set; } = EventStatus.Pending;
+
+        public string? MotivRespingere { get; set; } 
+
+        public string? OrganizatorId { get; set; }
+
+        public double RatingMediu { get; set; } = 0;
     }
 }

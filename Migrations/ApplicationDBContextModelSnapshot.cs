@@ -258,9 +258,6 @@ namespace TicketShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int?>("CosId")
                         .HasColumnType("int");
 
@@ -270,16 +267,19 @@ namespace TicketShop.Migrations
                     b.Property<decimal>("Pret")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("Vandut")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
-
                     b.HasIndex("CosId");
 
                     b.HasIndex("EvenimentId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Bilete");
                 });
@@ -346,13 +346,25 @@ namespace TicketShop.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("MotivRespingere")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Nume")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
+                    b.Property<string>("OrganizatorId")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal>("Pret")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<double>("RatingMediu")
+                        .HasColumnType("float");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -380,38 +392,6 @@ namespace TicketShop.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("FAQs");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Intrebare = "retur",
-                            Raspuns = "Poți returna biletele cu maxim 24 de ore înainte de eveniment. Banii intră în cont în 3 zile."
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Intrebare = "contact",
-                            Raspuns = "Ne poți contacta la support@ticketshop.ro sau la telefon 0770.123.456."
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Intrebare = "buna",
-                            Raspuns = "Bună! Sunt asistentul tău roz. Întreabă-mă despre bilete, cont sau evenimente! 💕"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Intrebare = "cont",
-                            Raspuns = "Poți crea un cont gratuit apăsând pe butonul Register din dreapta sus."
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Intrebare = "locatie",
-                            Raspuns = "Locația evenimentului este scrisă pe biletul electronic pe care îl primești pe email."
-                        });
                 });
 
             modelBuilder.Entity("TicketShop.Models.Review", b =>
@@ -546,10 +526,6 @@ namespace TicketShop.Migrations
 
             modelBuilder.Entity("TicketShop.Models.Bilet", b =>
                 {
-                    b.HasOne("TicketShop.Models.ApplicationUser", null)
-                        .WithMany("Bilete")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("TicketShop.Models.Cos", "Cos")
                         .WithMany("Bilete")
                         .HasForeignKey("CosId")
@@ -561,9 +537,15 @@ namespace TicketShop.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TicketShop.Models.ApplicationUser", "User")
+                        .WithMany("Bilete")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Cos");
 
                     b.Navigation("Eveniment");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TicketShop.Models.Eveniment", b =>
