@@ -31,19 +31,22 @@ namespace TicketShop.Controllers
                 .Where(f => mesajUser.Contains(f.Intrebare.ToLower()) || f.Intrebare.ToLower().Contains(mesajUser))
                 .FirstOrDefaultAsync();
 
-            string raspunsBot;
-
             if (faq != null)
             {
-                raspunsBot = faq.Raspuns;
-            }
-            else
-            {
-                // Răspuns standard când nu știe
-                raspunsBot = "Îmi pare rău, nu am înțeles întrebarea. Poți întreba despre: bilete, retur, locație, cont sau contact.";
+                return Json(new { response = faq.Raspuns });
             }
 
-            return Json(new { response = raspunsBot });
+            // ADĂUGARE NOUĂ: Căutăm în descrierile evenimentelor
+            var evenimentGasit = await _context.Evenimente
+                .Where(e => e.Descriere.ToLower().Contains(mesajUser) || e.Nume.ToLower().Contains(mesajUser))
+                .FirstOrDefaultAsync();
+
+            if (evenimentGasit != null)
+            {
+                return Json(new { response = $"Am găsit ceva legat de asta la evenimentul '{evenimentGasit.Nume}': {evenimentGasit.Descriere.Substring(0, Math.Min(100, evenimentGasit.Descriere.Length))}..." });
+            }
+
+            return Json(new { response = "Nu am găsit informații, dar poți contacta un administrator." });
         }
     }
 

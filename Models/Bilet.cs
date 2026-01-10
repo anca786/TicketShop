@@ -17,5 +17,8 @@ namespace TicketShop.Models
 
         [ForeignKey("CosId")]
         public virtual Cos? Cos { get; set; }
+
+        public string? UserId { get; set; } // ID-ul userului (Cheie Externă)
+        public virtual ApplicationUser? User { get; set; }
     }
 }

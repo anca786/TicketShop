@@ -20,12 +20,15 @@
                     <td>@user.Email</td>
                     <td>@user.Nume</td>
                     <td>
-                        <form asp-action="Delete" method="post" onsubmit="return confirm('Sigur ștergi acest utilizator?');">
+                        @if (user.UserName != User.Identity.Name)
+                        { 
+                           <form asp-action="Delete" method="post" onsubmit="return confirm('Sigur ștergi acest utilizator?');">
                             <input type="hidden" name="id" value="@user.Id" />
                             <button type="submit" class="btn btn-danger btn-sm">
                                 <i class="bi bi-trash"></i> Șterge
                             </button>
-                        </form>
+                            </form>
+                        }
                     </td>
                 </tr>
             }

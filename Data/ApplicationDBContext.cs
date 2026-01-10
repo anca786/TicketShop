@@ -38,38 +38,7 @@ namespace TicketShop.Data
             builder.Entity<Bilet>()
                 .Property(b => b.Pret)
                 .HasColumnType("decimal(18,2)");
-            builder.Entity<FAQ>().HasData(
-        new FAQ
-        {
-            Id = 1, // La seeding TREBUIE să pui ID-ul manual
-            Intrebare = "retur",
-            Raspuns = "Poți returna biletele cu maxim 24 de ore înainte de eveniment. Banii intră în cont în 3 zile."
-        },
-        new FAQ
-        {
-            Id = 2,
-            Intrebare = "contact",
-            Raspuns = "Ne poți contacta la support@ticketshop.ro sau la telefon 0770.123.456."
-        },
-        new FAQ
-        {
-            Id = 3,
-            Intrebare = "buna",
-            Raspuns = "Bună! Sunt asistentul tău roz. Întreabă-mă despre bilete, cont sau evenimente! 💕"
-        },
-        new FAQ
-        {
-            Id = 4,
-            Intrebare = "cont",
-            Raspuns = "Poți crea un cont gratuit apăsând pe butonul Register din dreapta sus."
-        },
-        new FAQ
-        {
-            Id = 5,
-            Intrebare = "locatie",
-            Raspuns = "Locația evenimentului este scrisă pe biletul electronic pe care îl primești pe email."
-        }
-    );
+        
         
 
     }

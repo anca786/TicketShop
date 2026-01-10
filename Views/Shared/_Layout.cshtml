@@ -82,7 +82,7 @@
                         {
                             var currentUser = await UserManager.GetUserAsync(User);
                             <li class="nav-item">
-                                <a class="nav-link text-dark" href="#">
+                                <a class="nav-link text-dark" asp-controller="Users" asp-action="Profile" title="Vezi Profilul Meu">
                                     <i class="bi bi-person-circle"></i> Salut, @currentUser?.Nume!
                                 </a>
                             </li>

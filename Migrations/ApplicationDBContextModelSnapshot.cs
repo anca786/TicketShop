@@ -34,7 +34,7 @@ namespace TicketShop.Migrations
 
                     b.HasIndex("WishlistId");
 
-                    b.ToTable("EvenimentWishlist", (string)null);
+                    b.ToTable("EvenimentWishlist");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -258,9 +258,6 @@ namespace TicketShop.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int?>("CosId")
                         .HasColumnType("int");
 
@@ -270,18 +267,21 @@ namespace TicketShop.Migrations
                     b.Property<decimal>("Pret")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<bool>("Vandut")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ApplicationUserId");
-
                     b.HasIndex("CosId");
 
                     b.HasIndex("EvenimentId");
 
-                    b.ToTable("Bilete", (string)null);
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Bilete");
                 });
 
             modelBuilder.Entity("TicketShop.Models.Categorie", b =>
@@ -299,7 +299,7 @@ namespace TicketShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categorii", (string)null);
+                    b.ToTable("Categorii");
                 });
 
             modelBuilder.Entity("TicketShop.Models.Cos", b =>
@@ -316,7 +316,7 @@ namespace TicketShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cosuri", (string)null);
+                    b.ToTable("Cosuri");
                 });
 
             modelBuilder.Entity("TicketShop.Models.Eveniment", b =>
@@ -370,7 +370,7 @@ namespace TicketShop.Migrations
 
                     b.HasIndex("CategorieId");
 
-                    b.ToTable("Evenimente", (string)null);
+                    b.ToTable("Evenimente");
                 });
 
             modelBuilder.Entity("TicketShop.Models.FAQ", b =>
@@ -391,39 +391,7 @@ namespace TicketShop.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("FAQs", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Intrebare = "retur",
-                            Raspuns = "Poți returna biletele cu maxim 24 de ore înainte de eveniment. Banii intră în cont în 3 zile."
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Intrebare = "contact",
-                            Raspuns = "Ne poți contacta la support@ticketshop.ro sau la telefon 0770.123.456."
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Intrebare = "buna",
-                            Raspuns = "Bună! Sunt asistentul tău roz. Întreabă-mă despre bilete, cont sau evenimente! 💕"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Intrebare = "cont",
-                            Raspuns = "Poți crea un cont gratuit apăsând pe butonul Register din dreapta sus."
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Intrebare = "locatie",
-                            Raspuns = "Locația evenimentului este scrisă pe biletul electronic pe care îl primești pe email."
-                        });
+                    b.ToTable("FAQs");
                 });
 
             modelBuilder.Entity("TicketShop.Models.Review", b =>
@@ -458,7 +426,7 @@ namespace TicketShop.Migrations
 
                     b.HasIndex("UtilizatorId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("TicketShop.Models.Wishlist", b =>
@@ -478,7 +446,7 @@ namespace TicketShop.Migrations
                     b.HasIndex("UtilizatorId")
                         .IsUnique();
 
-                    b.ToTable("Wishlists", (string)null);
+                    b.ToTable("Wishlists");
                 });
 
             modelBuilder.Entity("EvenimentWishlist", b =>
@@ -558,10 +526,6 @@ namespace TicketShop.Migrations
 
             modelBuilder.Entity("TicketShop.Models.Bilet", b =>
                 {
-                    b.HasOne("TicketShop.Models.ApplicationUser", null)
-                        .WithMany("Bilete")
-                        .HasForeignKey("ApplicationUserId");
-
                     b.HasOne("TicketShop.Models.Cos", "Cos")
                         .WithMany("Bilete")
                         .HasForeignKey("CosId")
@@ -573,9 +537,15 @@ namespace TicketShop.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("TicketShop.Models.ApplicationUser", "User")
+                        .WithMany("Bilete")
+                        .HasForeignKey("UserId");
+
                     b.Navigation("Cos");
 
                     b.Navigation("Eveniment");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TicketShop.Models.Eveniment", b =>

@@ -1,6 +1,107 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Secretos... shhh!";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold" style="color: #880e4f;">
+            <i class="bi bi-shield-lock-fill"></i> Politica noastră... pe bune
+        </h1>
+        <p class="lead text-muted">
+            Nu ne plac textele juridice lungi, așa că ți-am tradus totul pe limba noastră.
+        </p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold text-danger"><i class="bi bi-heart-fill"></i> Promisiunea noastră</h4>
+                    <p>
+                        La <strong>TicketShop</strong>, ținem la datele tale mai mult decât ținem la parola noastră de Netflix.
+                        Nu vindem datele tale nimănui, nu le dăm extratereștrilor și cu siguranță nu le folosim
+                        ca să te sunăm pentru "garanția extinsă a mașinii tale".
+                    </p>
+                </div>
+            </div>
+
+            <div class="accordion shadow-sm" id="privacyAccordion">
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingOne">
+                        <button class="accordion-button fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                            1. Ce date colectăm de la tine?
+                        </button>
+                    </h2>
+                    <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#privacyAccordion">
+                        <div class="accordion-body">
+                            <ul>
+                                <li><strong>Numele tău:</strong> Ca să știm cum să te strigăm (și să scriem corect pe bilet).</li>
+                                <li><strong>Adresa de email:</strong> Ca să-ți trimitem biletul. Promitem 0 spam. Poate doar o felicitare de Crăciun.</li>
+                                <li><strong>Parola:</strong> Dar stai liniștit! Nici măcar noi nu o vedem. E criptată (hash-uită) atât de bine încât arată ca o pisică care a mers pe tastatură: <code>Xy7#b9@mm!</code>.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingTwo">
+                        <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                            2. Despre Cookies (Nu, nu sunt de mâncat)
+                        </button>
+                    </h2>
+                    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#privacyAccordion">
+                        <div class="accordion-body">
+                            <p>
+                                Folosim cookie-uri. Din păcate, nu sunt cele cu ciocolată 🍪.
+                                Sunt mici fișiere care ajută site-ul să țină minte că ești logat.
+                                Fără ele, ar trebui să te loghezi la fiecare click, și nimeni nu vrea asta.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingThree">
+                        <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                            3. Cine îți mai vede datele?
+                        </button>
+                    </h2>
+                    <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#privacyAccordion">
+                        <div class="accordion-body">
+                            <p>Practic, nimeni.</p>
+                            <ul>
+                                <li><strong>Adminul (Eu):</strong> Doar dacă am nevoie să repar ceva la contul tău.</li>
+                                <li><strong>Poliția Internetului:</strong> Doar dacă faci ceva ilegal (te rugăm să nu).</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingFour">
+                        <button class="accordion-button collapsed fw-bold text-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                            4. Vrei să ne părăsești? (Dreptul la ștergere)
+                        </button>
+                    </h2>
+                    <div id="collapseFour" class="accordion-collapse collapse" data-bs-parent="#privacyAccordion">
+                        <div class="accordion-body">
+                            <p>
+                                Deși ne frângi inima 💔, ai dreptul să ceri ștergerea contului oricând.
+                                Tot istoricul tău va dispărea în neantul digital. Dar sperăm să rămâi!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="text-center mt-5">
+                <p class="text-muted small">Ultima actualizare: Azi (sau când am scris codul ăsta).</p>
+                <a asp-controller="Home" asp-action="Contact" class="btn btn-outline-dark btn-sm">Am o întrebare serioasă</a>
+            </div>
+
+        </div>
+    </div>
+</div>

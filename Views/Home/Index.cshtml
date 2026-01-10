@@ -1,29 +1,41 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center py-4">
-    <h1 class="display-4 fw-bold">Bun venit la TicketShop!</h1>
-    <p class="lead">Găsește bilete la cele mai tari evenimente din oraș.</p>
+<div class="p-5 text-center bg-image rounded-3 mb-5 position-relative shadow-lg"
+     style="background-image: url('https://images.unsplash.com/photo-1459749411177-2a2f584a5ef6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            height: 450px; background-size: cover; background-position: center;">
 
-    <div class="row justify-content-center mt-4">
-        <div class="col-md-6">
-            <form asp-action="Index" method="get">
-                <div class="input-group mb-3 shadow-sm">
+    <div class="mask position-absolute top-0 start-0 w-100 h-100"
+         style="background-color: rgba(255, 185, 205, 0.9); border-radius: 0.3rem;">
+        <div class="d-flex justify-content-center align-items-center h-100 flex-column px-3">
+            <div class="text-dark mb-4 text-center">
+                <h1 class="display-3 fw-bold ls-tight" style="color: #880e4f;">Trăiește ritmul orașului tău!</h1>
+
+                <h4 class="fw-bold" style=" color: #880e4f;">Concerte, festivaluri și spectacole la un click distanță.</h4>
+            </div>
+
+            <p class="mb-4 fw-semibold lead" style="color: #880e4f; max-width: 700px;">
+    TicketShop conectează fanii cu artiștii lor preferați. Rezervă bilete rapid, 
+    verifică disponibilitatea în timp real și lasă asistentul nostru AI să te ghideze.
+</p>
+
+            <form asp-action="Index" method="get" class="w-100" style="max-width: 600px;">
+                <div class="input-group input-group-lg shadow">
                     <input type="text"
                            name="cautare"
-                           class="form-control form-control-lg"
+                           class="form-control border-0"
                            placeholder="Caută concert, meci, artist..."
-                           value="@ViewData["CautareCurenta"]">
+                           value="@ViewData["CautareCurenta"]"
+                           style="padding: 1.2rem;">
 
-                    <button class="btn btn-primary px-4" type="submit">
+                    <button class="btn btn-light text-danger fw-bold px-4" type="submit">
                         <i class="bi bi-search"></i> Caută
                     </button>
 
                     @if (ViewData["CautareCurenta"] != null)
                     {
-                        <a asp-action="Index" class="btn btn-outline-secondary">
+                        <a asp-action="Index" class="btn btn-light border-0 text-danger d-flex align-items-center">
                             <i class="bi bi-x-lg"></i>
                         </a>
                     }
@@ -33,25 +45,61 @@
     </div>
 </div>
 
-@if (Model.Count== 0)
+@if (Model.Count == 0)
 {
-    <div class="text-center mt-5">
-        <h3 class="text-muted">Nu am găsit niciun eveniment pentru "@ViewData["CautareCurenta"]"</h3>
-        <a asp-action="Index" class="btn btn-link">Vezi toate evenimentele</a>
+    <div class="text-center mt-5 mb-5">
+        <div class="alert alert-light d-inline-block shadow-sm p-4">
+            <i class="bi bi-emoji-frown display-4 text-muted mb-3 d-block"></i>
+            <h3 class="text-muted">Nu am găsit niciun eveniment pentru "@ViewData["CautareCurenta"]"</h3>
+            <a asp-controller="Evenimente" asp-action="Index" class="btn btn-outline-primary mt-3">Vezi toate evenimentele</a>
+        </div>
     </div>
 }
 
-<div class="row mt-4">
-    @foreach (var item in Model)
-    {
-        <div class="col-md-4 mb-4">
-            <div class="card h-100 shadow-sm">
-                <img src="@(string.IsNullOrEmpty(item.ImagineUrl) ? "https://placehold.co/600x400" : item.ImagineUrl)" class="card-img-top" alt="@item.Nume" style="height: 250px; object-fit: cover; width: 100%;">
-                <div class="card-body">
-                    <h5 class="card-title">@item.Nume</h5>
-                    <a asp-controller="Evenimente" asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary">Detalii</a>
+<div class="container">
+</div>
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        @foreach (var item in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm border-0 event-card">
+                    <div class="position-relative">
+                        <img src="@(string.IsNullOrEmpty(item.ImagineUrl) ? "https://dummyimage.com/600x400/dee2e6/6c757d.jpg" : item.ImagineUrl)"
+                             class="card-img-top" alt="@item.Nume"
+                             style="height: 200px; object-fit: cover;">
+
+                        <span class="position-absolute top-0 end-0 bg-warning text-dark fw-bold px-3 py-1 m-2 rounded-pill">
+                            @item.Pret LEI
+                        </span>
+
+                        <span class="position-absolute bottom-0 start-0 bg-primary text-white px-2 py-1 m-2 rounded small">
+                            @item.Categorie?.Nume
+                        </span>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="text-muted small mb-2">
+                            <i class="bi bi-calendar-event"></i> @item.Data.ToString("dd MMMM yyyy, HH:mm")
+                        </div>
+
+                        <h5 class="card-title fw-bold">@item.Nume</h5>
+
+                        <p class="card-text text-secondary">
+                            @(item.Descriere.Length > 100 ? item.Descriere.Substring(0, 100) + "..." : item.Descriere)
+                        </p>
+                    </div>
+
+                    <div class="card-footer bg-white border-0 pb-3">
+                        <div class="d-grid gap-2">
+                            <a asp-controller="Evenimente" asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-dark">
+                                Vezi Detalii
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    }
+        }
+    </div>
 </div>

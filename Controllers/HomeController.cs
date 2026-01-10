@@ -45,6 +45,11 @@ public class HomeController : Controller
     // Salvãm ce a cãutat userul ca sã-i rãmânã scris în cãsu?ã dupã refresh
     ViewData["CautareCurenta"] = cautare;
 
+    if (string.IsNullOrEmpty(cautare)) 
+    {
+        query = query.Take(3);
+    }
+
     // 4. Executãm interogarea ?i trimitem lista
     return View(await query.ToListAsync());
 }

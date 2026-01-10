@@ -111,6 +111,9 @@
     <Content Update="wwwroot\imagini\imag_tenis.jpeg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Update="wwwroot\imagini\logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Update="wwwroot\imagini\pisicut.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

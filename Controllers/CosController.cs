@@ -122,6 +122,8 @@ public class CosController : Controller
             foreach (var bilet in cos.Bilete)
             {
                 bilet.CosId = null;
+                bilet.Vandut = true;
+                bilet.UserId = userId;
             }
 
             // 3. Salvăm modificările
