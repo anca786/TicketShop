@@ -22,19 +22,16 @@ namespace TicketShop.Data
         {
             base.OnModelCreating(builder);
 
-            // Wishlist (neschimbat)
             builder.Entity<Wishlist>()
                 .HasMany(w => w.Evenimente)
                 .WithMany();
 
-            // --- CONFIGURAREA CORECTĂ PENTRU COȘ ---
             builder.Entity<Cos>()
-                .HasMany(c => c.Bilete)       // Un coș -> multe bilete
-                .WithOne(b => b.Cos)          // Un bilet -> un singur coș
+                .HasMany(c => c.Bilete)     
+                .WithOne(b => b.Cos)          
                 .HasForeignKey(b => b.CosId)
-                .OnDelete(DeleteBehavior.SetNull); // Dacă ștergem coșul, nu ștergem biletul din DB
+                .OnDelete(DeleteBehavior.SetNull);
 
-            // Preț
             builder.Entity<Bilet>()
                 .Property(b => b.Pret)
                 .HasColumnType("decimal(18,2)");

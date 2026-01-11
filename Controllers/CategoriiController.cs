@@ -40,7 +40,6 @@ namespace TicketShop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> New(Categorie categorie)
         {
-            //incerca sa valideze aiurea si evenimente 
             ModelState.Remove(nameof(Categorie.Evenimente));
 
             if (!ModelState.IsValid)
@@ -53,7 +52,6 @@ namespace TicketShop.Controllers
             TempData["message"] = "Categoria a fost adăugată cu succes!";
             return RedirectToAction(nameof(AdminIndex));
         }
-        // Edit - GET
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -69,7 +67,6 @@ namespace TicketShop.Controllers
             return View(categorie);
         }
 
-        // Edit - POST
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Categorie categorie)

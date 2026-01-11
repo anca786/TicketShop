@@ -8,14 +8,12 @@ public static class DbSeeder
 {
     public static async Task SeedData(IServiceProvider serviceProvider)
     {
-        // 1. Setup Services - Obținem serviciile necesare (Context, User Manager, Role Manager)
         var context = serviceProvider.GetRequiredService<ApplicationDBContext>();
         var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
         await context.Database.MigrateAsync();
 
-        // --- 2. Seed Roluri (Required: Admin, Colaborator, Utilizator) ---
         string[] roleNames = { "Admin", "Colaborator", "Utilizator" };
         foreach (var roleName in roleNames)
         {
@@ -25,7 +23,6 @@ public static class DbSeeder
             }
         }
 
-        // --- 3. Seed Categorii ---
         if (!context.Categorii.Any())
         {
             var categorii = new Categorie[]
@@ -41,7 +38,6 @@ public static class DbSeeder
         var concert = context.Categorii.First(c => c.Nume == "Concert");
         var sport = context.Categorii.First(c => c.Nume == "Sport");
 
-        // --- 4. Seed Evenimente (5 Evenimente) ---
         if (!context.Evenimente.Any())
         {
             var evenimente = new Eveniment[]
@@ -96,10 +92,8 @@ public static class DbSeeder
             await context.SaveChangesAsync();
         }
 
-        // --- 5. Seed Utilizatori (3 Utilizatori) ---
         const string defaultPassword = "DemoUser123!";
 
-        // Utilizator 1 (Admin)
         if (await userManager.FindByEmailAsync("admin@shop.ro") == null)
         {
             var adminUser = new ApplicationUser
@@ -111,11 +105,9 @@ public static class DbSeeder
                 EmailConfirmed = true
             };
             await userManager.CreateAsync(adminUser, defaultPassword);
-            // ATRIBUIRE ROL ADMIN
             await userManager.AddToRoleAsync(adminUser, "Admin");
         }
 
-        // Utilizator 2 (Colaborator)
         if (await userManager.FindByEmailAsync("colaborator@shop.ro") == null)
         {
             var user1 = new ApplicationUser
@@ -130,7 +122,6 @@ public static class DbSeeder
             await userManager.AddToRoleAsync(user1, "Colaborator");
         }
 
-        // Utilizator 3 (Standard)
         if (await userManager.FindByEmailAsync("client@shop.ro") == null)
         {
             var user2 = new ApplicationUser

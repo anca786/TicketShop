@@ -173,7 +173,6 @@
         </div>
     </div>
     <style>
-        /* Butonul Plutitor */
         #chat-toggle-btn {
             position: fixed;
             bottom: 30px;
@@ -196,7 +195,6 @@
                 background-color: #f50057;
             }
 
-        /* Fereastra de Chat */
         #chat-window {
             position: fixed;
             bottom: 100px;
@@ -211,7 +209,6 @@
             animation: slideIn 0.3s ease-out;
         }
 
-        /* AICI AM PUS @@ PENTRU CĂ SUNTEM ÎN RAZOR VIEW */
         @@keyframes slideIn {
             from {
                 opacity: 0;
@@ -224,7 +221,6 @@
             }
         }
 
-        /* Zona de mesaje */
         #chat-messages {
             height: 320px;
             overflow-y: auto;
@@ -235,7 +231,6 @@
             gap: 10px;
         }
 
-        /* Bule de chat */
         .chat-bubble {
             max-width: 80%;
             padding: 10px 15px;
@@ -282,17 +277,14 @@
 
             if (message === "") return;
 
-            // 1. Adăugăm mesajul userului în interfață
             var userBubble = document.createElement("div");
             userBubble.className = "chat-bubble user-message";
             userBubble.innerText = message;
             messagesArea.appendChild(userBubble);
 
-            // Curățăm inputul
             input.value = "";
-            messagesArea.scrollTop = messagesArea.scrollHeight; // Scroll jos
+            messagesArea.scrollTop = messagesArea.scrollHeight; 
 
-            // 2. Trimitem la server (Controller)
             fetch('/Chat/GetRaspuns', {
                 method: 'POST',
                 headers: {
@@ -302,7 +294,6 @@
             })
             .then(response => response.json())
             .then(data => {
-                // 3. Afișăm răspunsul botului
                 var botBubble = document.createElement("div");
                 botBubble.className = "chat-bubble bot-message";
                 botBubble.innerText = data.response;

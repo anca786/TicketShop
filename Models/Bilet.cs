@@ -8,17 +8,15 @@ namespace TicketShop.Models
         public decimal Pret { get; set; }
         public bool Vandut { get; set; }
 
-        // Restul proprietăților tale (Eveniment, Categorie etc.)
         public int EvenimentId { get; set; }
         public Eveniment Eveniment { get; set; }
 
-        // --- PARTEA NOUĂ ---
-        public int? CosId { get; set; } // Nullable!
+        public int? CosId { get; set; } 
 
         [ForeignKey("CosId")]
         public virtual Cos? Cos { get; set; }
 
-        public string? UserId { get; set; } // ID-ul userului (Cheie Externă)
+        public string? UserId { get; set; } 
         public virtual ApplicationUser? User { get; set; }
     }
 }

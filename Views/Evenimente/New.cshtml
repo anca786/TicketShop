@@ -2,7 +2,6 @@
 @using TicketShop.Models
 
 @{
-    // Schimbăm titlul în funcție de rol
     bool isAdmin = User.IsInRole("Admin");
     ViewData["Title"] = isAdmin ? "Adaugă Eveniment" : "Propune Eveniment";
     var categorii = ViewBag.Categorii as List<Categorie>;
@@ -83,7 +82,6 @@
                             }
                             else
                             {
-                                // Colaboratorul se întoarce pe Homepage
                                 <a asp-controller="Evenimente" asp-action="Index" class="btn btn-secondary">
                                     <i class="bi bi-arrow-left"></i> Înapoi la Site
                                 </a>

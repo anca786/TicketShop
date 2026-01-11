@@ -155,7 +155,6 @@
     <script>
         function toggleWishlist(btn, evenimentId) {
             var icon = btn.querySelector("i");
-            // Efect vizual imediat (optimist UI)
             if (icon.classList.contains("bi-heart")) {
                 icon.className = "bi bi-heart-fill fs-3";
                 icon.style.color = "hotpink";
@@ -164,7 +163,6 @@
                 icon.style.color = "";
             }
 
-            // Apel server
             fetch('/Wishlist/Toggle?evenimentId=' + evenimentId, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }

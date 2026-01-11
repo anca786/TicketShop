@@ -37,7 +37,6 @@
                             <i class="bi bi-pencil"></i> Editează
                         </a>
 
-                        <!-- Buton care doar deschide modalul -->
                         <button type="button"
                                 class="btn btn-danger btn-sm"
                                 data-bs-toggle="modal"
@@ -53,7 +52,6 @@
     </table>
 </div>
 
-<!-- Formular + Modal de confirmare ștergere -->
 <form id="deleteForm" asp-controller="Categorii" asp-action="Delete" method="post">
     @Html.AntiForgeryToken()
     <input type="hidden" name="id" id="deleteId" />
@@ -70,7 +68,6 @@
                 </div>
 
                 <div class="modal-body text-center">
-                    <!-- imagine funny - pune fișierul în wwwroot/images/ -->
                     <img src="~/imagini/pisicut.png" alt="Funny warning" class="img-fluid mb-3" />
 
                     <p class="fw-bold mb-1">

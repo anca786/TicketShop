@@ -168,7 +168,6 @@
 
 @section Scripts {
     <script>
-        // Script pentru Modalul de Ștergere
         const deleteEventModal = document.getElementById('deleteEventModal');
         deleteEventModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;
@@ -178,7 +177,6 @@
             document.getElementById('deleteEventName').textContent = '"' + name + '"';
         });
 
-        // Script pentru Modalul de Generare Bilete (NOU)
         const generateTicketsModal = document.getElementById('generateTicketsModal');
         generateTicketsModal.addEventListener('show.bs.modal', function (event) {
             const button = event.relatedTarget;

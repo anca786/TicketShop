@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Detalii Eveniment";
-    // Luăm valorile direct din Controller (unde ai zis că mergea bine)
     bool isInWishlist = ViewBag.IsWishlisted != null && (bool)ViewBag.IsWishlisted;
     int stoc = ViewBag.Stoc != null ? (int)ViewBag.Stoc : 0;
 }
@@ -245,10 +244,8 @@
 @section Scripts {
     <script>
         function toggleWishlist(btn, evenimentId) {
-            // Găsim iconița (tag-ul <i>) din buton
             var icon = btn.querySelector("i");
 
-            // Facem cererea către server
             fetch('/Wishlist/Toggle?evenimentId=' + evenimentId, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' }
@@ -260,21 +257,17 @@
             .then(data => {
                 if (data.success) {
                     if (data.isAdded) {
-                        // === CAZ 1: ADĂUGAT (ROZ) ===
-                        icon.className = "bi bi-heart-fill fs-2"; // Clasa pentru inimă plină
-                        icon.style.color = "hotpink"; // Forțăm culoarea
+                        icon.className = "bi bi-heart-fill fs-2"; 
+                        icon.style.color = "hotpink"; 
 
-                        // Mică animație
                         icon.style.transition = "transform 0.2s";
                         icon.style.transform = "scale(1.3)";
                         setTimeout(() => icon.style.transform = "scale(1)", 200);
                     } else {
-                        // === CAZ 2: SCOS (NEGRU/GOL) ===
-                        icon.className = "bi bi-heart fs-2 text-dark"; // Clasa pentru inimă goală
-                        icon.style.color = ""; // Resetăm culoarea
+                        icon.className = "bi bi-heart fs-2 text-dark";
+                        icon.style.color = ""; 
                     }
                 } else {
-                    // Dacă serverul zice "success: false" (ex: nu e logat)
                     alert(data.message || "A apărut o eroare!");
                 }
             })

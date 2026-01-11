@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-// AICI ESTE CHEIA: Folosim namespace-ul tău existent
 namespace TicketShop.Models.ViewModels
 {
     public class UserSettingsViewModel
@@ -14,7 +13,6 @@ namespace TicketShop.Models.ViewModels
         public string? Email { get; set; }
 
 
-        // --- SCHIMBARE PAROLĂ ---
 
         [DataType(DataType.Password)]
         [Display(Name = "Parola Actuală")]
@@ -23,7 +21,6 @@ namespace TicketShop.Models.ViewModels
         [DataType(DataType.Password)]
         [Display(Name = "Parola Nouă")]
         [MinLength(8, ErrorMessage = "Parola trebuie să aibă minim 8 caractere")]
-        // Am copiat Regex-ul tău din RegisterViewModel ca să fie aceleași reguli de securitate
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$", ErrorMessage = "Parola trebuie să conțină o majusculă, o cifră și un caracter special.")]
         public string? NewPassword { get; set; }
 
