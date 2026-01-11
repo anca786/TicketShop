@@ -37,7 +37,10 @@
 ---
 
 ## 📸 Capturi de Ecran (Opțional)
-*(Aici poți pune link-uri către imagini dacă urci proiectul pe GitHub, de exemplu: Pagina de Home, Profilul cu QR Code, Coșul)*
+
+<img width="1909" height="747" alt="Screenshot 2026-01-11 221604" src="https://github.com/user-attachments/assets/50a62404-4fc0-45e5-b21e-081bdc410865" />
+<img width="1888" height="916" alt="Screenshot 2026-01-11 221550" src="https://github.com/user-attachments/assets/aea74516-f27d-4112-8481-7f582604dedd" />
+<img width="1908" height="921" alt="Screenshot 2026-01-11 221527" src="https://github.com/user-attachments/assets/9e9a5c69-7fac-4acc-9077-81aa579ed395" />
 
 ---
 
