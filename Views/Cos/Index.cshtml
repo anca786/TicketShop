@@ -19,10 +19,8 @@ else
             </tr>
         </thead>
         <tbody>
-            @* AICI ESTE MAGIA: Grupăm biletele după ID-ul evenimentului *@
             @foreach (var grup in Model.Bilete.GroupBy(b => b.EvenimentId))
             {
-                // Luăm primul bilet din grup ca să avem acces la Nume, Preț etc.
                 var biletReferinta = grup.First();
                 var cantitate = grup.Count();
                 var subtotal = grup.Sum(b => b.Pret);

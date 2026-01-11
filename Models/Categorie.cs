@@ -10,7 +10,6 @@ namespace TicketShop.Models
         [RegularExpression(@"^[a-zA-Z0-9\s\-_]*$", ErrorMessage = "Numele introdus conține caractere nepermise")]
         public string Nume { get; set; }
 
-        //avem 1:N cu Eveniment
         public ICollection<Eveniment> Evenimente { get; set; }
     }
 }

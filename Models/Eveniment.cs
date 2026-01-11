@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace TicketShop.Models
 {
-    // stari posibile ale evenimentului
         public enum EventStatus
         {
             Pending,   
@@ -40,15 +39,13 @@ namespace TicketShop.Models
         [Display(Name = "Încarcă Imagine")]
         public IFormFile? ImagineFisier { get; set; }
 
-        // Relație cu categorie
         [Display(Name = "Categorie")]
         public int CategorieId { get; set; }
         public Categorie Categorie { get; set; }
 
-        // Relație 1:N cu Bilet și Review
         public ICollection<Bilet> Bilete { get; set; }
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
-        [Column(TypeName = "decimal(18,2)")] // Formatare pentru bani
+        [Column(TypeName = "decimal(18,2)")] 
         public decimal Pret { get; set; }
 
         public EventStatus Status { get; set; } = EventStatus.Pending;

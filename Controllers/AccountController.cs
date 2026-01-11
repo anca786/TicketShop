@@ -17,7 +17,6 @@ namespace TicketShop.Controllers
             _signInManager = signInManager;
         }
 
-        //register
 
         [HttpGet]
         public IActionResult Register()
@@ -30,7 +29,6 @@ namespace TicketShop.Controllers
         {
             if (ModelState.IsValid)
             {
-                //creare utilizator
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Nume = model.Nume, Prenume = model.Prenume };
                 var result = await _userManager.CreateAsync(user, model.Password);
 
@@ -49,7 +47,6 @@ namespace TicketShop.Controllers
             return View(model);
         }
 
-        //login
 
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
@@ -79,7 +76,6 @@ namespace TicketShop.Controllers
             return View(model);
         }
 
-        //logoyt
 
         [HttpPost]
         public async Task<IActionResult> Logout()

@@ -24,9 +24,6 @@ namespace TicketShop.Controllers
 
             var mesajUser = request.Message.Trim().ToLower();
 
-            // LOGICA DE CĂUTARE:
-            // Căutăm o întrebare din baza de date care să fie conținută în ce a scris userul
-            // SAU invers (dacă userul a scris doar un cuvânt cheie).
             var faq = await _context.FAQs
                 .Where(f => mesajUser.Contains(f.Intrebare.ToLower()) || f.Intrebare.ToLower().Contains(mesajUser))
                 .FirstOrDefaultAsync();
@@ -36,7 +33,6 @@ namespace TicketShop.Controllers
                 return Json(new { response = faq.Raspuns });
             }
 
-            // ADĂUGARE NOUĂ: Căutăm în descrierile evenimentelor
             var evenimentGasit = await _context.Evenimente
                 .Where(e => e.Descriere.ToLower().Contains(mesajUser) || e.Nume.ToLower().Contains(mesajUser))
                 .FirstOrDefaultAsync();
@@ -50,7 +46,6 @@ namespace TicketShop.Controllers
         }
     }
 
-    // Clasă pentru a primi datele din JavaScript
     public class MessageRequest
     {
         public string Message { get; set; }

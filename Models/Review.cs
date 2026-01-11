@@ -13,7 +13,7 @@ namespace TicketShop.Models
 
         [Required(ErrorMessage = "Te rog selectează o notă.")]
         [Range(1, 5, ErrorMessage = "Nota trebuie să fie între 1 și 5.")]
-        public int Rating { get; set; } // 1-5
+        public int Rating { get; set; }
 
         [Required]
         public int EvenimentId { get; set; }

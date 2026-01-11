@@ -10,7 +10,6 @@ namespace TicketShop.Models
         public string UtilizatorId { get; set; }
         public ApplicationUser Utilizator { get; set; }
 
-        // Relație Many-to-Many cu Eveniment
         public ICollection<Eveniment> Evenimente { get; set; }
     }
 }

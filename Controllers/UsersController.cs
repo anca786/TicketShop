@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using TicketShop.Models; // Asigură-te de namespace
-using TicketShop.Models.ViewModels; // <--- Asta trebuie să apară
+using TicketShop.Models; 
+using TicketShop.Models.ViewModels; 
 
 [Authorize]
 public class UsersController : Controller
@@ -38,12 +38,11 @@ public class UsersController : Controller
     {
         var userId = _userManager.GetUserId(User);
 
-        // Încărcăm userul cu tot cu bilete și review-uri
         var user = await _userManager.Users
             .Include(u => u.Bilete)
-                .ThenInclude(b => b.Eveniment) // Ca să vedem la ce eveniment e biletul
+                .ThenInclude(b => b.Eveniment)
             .Include(u => u.Reviews)
-                .ThenInclude(r => r.Eveniment) // Ca să vedem unde a lăsat review
+                .ThenInclude(r => r.Eveniment)
             .FirstOrDefaultAsync(u => u.Id == userId);
 
         if (user == null)
@@ -51,10 +50,9 @@ public class UsersController : Controller
             return NotFound();
         }
 
-        return View(user); // Trimitem userul către View-ul Profile.cshtml
+        return View(user); 
     }
 
-    // 1. GET: Afișează formularul de setări
     public async Task<IActionResult> Settings()
     {
         var user = await _userManager.GetUserAsync(User);
@@ -70,7 +68,6 @@ public class UsersController : Controller
         return View(model);
     }
 
-    // 2. POST: Salvează modificările
     [HttpPost]
     public async Task<IActionResult> Settings(UserSettingsViewModel model)
     {
@@ -82,10 +79,8 @@ public class UsersController : Controller
         var user = await _userManager.GetUserAsync(User);
         if (user == null) return RedirectToAction("Login", "Account");
 
-        // A. Actualizăm datele de bază
         user.Nume = model.Nume;
         user.Prenume = model.Prenume;
-        user.PhoneNumber = model.PhoneNumber;
 
         var result = await _userManager.UpdateAsync(user);
 
@@ -95,7 +90,6 @@ public class UsersController : Controller
             return View(model);
         }
 
-        // B. Verificăm dacă vrea să schimbe parola
         if (!string.IsNullOrEmpty(model.NewPassword))
         {
             if (string.IsNullOrEmpty(model.OldPassword))

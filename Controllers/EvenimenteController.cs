@@ -49,19 +49,18 @@ public class EvenimenteController : Controller
                 evenimente = evenimente.OrderByDescending(e => e.Data);
                 break;
             case "Price":
-                evenimente = evenimente.OrderBy(e => e.Pret); // Preț mic -> mare
+                evenimente = evenimente.OrderBy(e => e.Pret); 
                 break;
             case "price_desc":
-                evenimente = evenimente.OrderByDescending(e => e.Pret); // Preț mare -> mic
+                evenimente = evenimente.OrderByDescending(e => e.Pret); 
                 break;
             case "Rating":
-                evenimente = evenimente.OrderBy(e => e.RatingMediu); // Rating mic -> mare
+                evenimente = evenimente.OrderBy(e => e.RatingMediu);
                 break;
             case "rating_desc":
-                evenimente = evenimente.OrderByDescending(e => e.RatingMediu); // Cel mai popular (Rating mare -> mic)
+                evenimente = evenimente.OrderByDescending(e => e.RatingMediu); 
                 break;
             default:
-                // Implicit: Data cea mai apropiată (Ascendent)
                 evenimente = evenimente.OrderBy(e => e.Data);
                 break;
         }
@@ -142,7 +141,7 @@ public class EvenimenteController : Controller
     {
         if (User.IsInRole("Admin"))
         {
-            eveniment.Status = EventStatus.Approved; // Sau EventStatus.Approved, depinde cum ai tu enum-ul
+            eveniment.Status = EventStatus.Approved; 
         }
         else
         {
@@ -272,7 +271,6 @@ public class EvenimenteController : Controller
         return RedirectToAction(nameof(AdminIndex));
     }
 
-    // POST: Evenimente/GenereazaBilete
 
     [HttpPost]
 
@@ -293,7 +291,7 @@ public class EvenimenteController : Controller
                     EvenimentId = id,
                     Pret = pret,
                     Vandut = false,
-                    CosId = null // E liber
+                    CosId = null 
                 });
             }
 
@@ -303,7 +301,6 @@ public class EvenimenteController : Controller
             TempData["Mesaj"] = $"Au fost generate {numarBilete} bilete cu succes!";
         }
 
-        // Ne întoarcem la pagina de administrare (AdminIndex) sau Index
         return RedirectToAction(nameof(AdminIndex));
     }
 

@@ -2,7 +2,6 @@
 
 @{
     ViewData["Title"] = "Contul Meu";
-    // Calculăm niște statistici simple
     var totalBilete = Model.Bilete?.Count ?? 0;
     var totalCheltuit = Model.Bilete?.Sum(b => b.Pret) ?? 0;
     var totalReviews = Model.Reviews?.Count ?? 0;
@@ -107,7 +106,6 @@
             {
                 @foreach (var bilet in Model.Bilete.OrderByDescending(b => b.Eveniment.Data))
                 {
-                    // DESIGN TIP "BOARDING PASS"
                     <div class="card shadow-sm border-0 mb-3 overflow-hidden">
                         <div class="row g-0">
                             <div class="col-md-3 bg-light d-flex flex-column justify-content-center align-items-center p-3 text-center border-end border-dashed">

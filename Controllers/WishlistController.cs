@@ -17,7 +17,6 @@ namespace TicketShop.Controllers
             _userManager = userManager;
         }
 
-        // 1. AFIȘARE PAGINĂ WISHLIST
         public async Task<IActionResult> Index()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -36,7 +35,6 @@ namespace TicketShop.Controllers
             return View(wishlist.Evenimente);
         }
 
-        // 2. TOGGLE (INIMIOARA) - Returnează JSON
         [HttpPost]
         public async Task<IActionResult> Toggle(int evenimentId)
         {
@@ -50,24 +48,20 @@ namespace TicketShop.Controllers
                 .Include(w => w.Evenimente)
                 .FirstOrDefaultAsync(w => w.UtilizatorId == user.Id);
 
-            // === AICI ERA PROBLEMA ===
             if (wishlist == null)
             {
                 wishlist = new Wishlist
                 {
                     UtilizatorId = user.Id,
-                    // FIX: Trebuie să creăm lista goală, altfel e NULL și dă eroare
                     Evenimente = new List<Eveniment>()
                 };
                 _context.Wishlists.Add(wishlist);
             }
 
-            // Măsură de siguranță suplimentară:
             if (wishlist.Evenimente == null)
             {
                 wishlist.Evenimente = new List<Eveniment>();
             }
-            // =========================
 
             var eveniment = await _context.Evenimente.FindAsync(evenimentId);
             if (eveniment == null) return Json(new { success = false, message = "Eveniment inexistent" });
@@ -89,8 +83,6 @@ namespace TicketShop.Controllers
             return Json(new { success = true, isAdded = isAdded });
         }
 
-        // 3. STERGE (BUTONUL DIN LISTĂ) - Returnează Redirect
-        // Asta lipsea!
         public async Task<IActionResult> Sterge(int id)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -110,7 +102,6 @@ namespace TicketShop.Controllers
                 }
             }
 
-            // Ne întoarcem la lista de favorite
             return RedirectToAction(nameof(Index));
         }
     }

@@ -16,23 +16,18 @@ public class ReviewsController : Controller
         _userManager = userManager;
     }
 
-    // 1. ADĂUGARE (POST)
     [HttpPost]
     [Authorize]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Adauga([Bind("EvenimentId,Continut,Rating")] Review review)
     {
-        // 1. Setăm manual Userul și Data
         review.UtilizatorId = _userManager.GetUserId(User);
         review.DataPostarii = DateTime.Now;
 
-        // 2. IMPORTANT: Eliminăm erorile de validare pentru câmpurile pe care le completăm noi automat
-        // Dacă nu facem asta, ModelState.IsValid va fi FALSE pentru că UtilizatorId era null la trimiterea form-ului
         ModelState.Remove(nameof(Review.Utilizator));
-        ModelState.Remove(nameof(Review.UtilizatorId)); // <--- ASTA LIPSEA
+        ModelState.Remove(nameof(Review.UtilizatorId)); 
         ModelState.Remove(nameof(Review.Eveniment));
 
-        // 3. Verificăm acum validarea
         if (ModelState.IsValid)
         {
             _context.Reviews.Add(review);
@@ -42,16 +37,13 @@ public class ReviewsController : Controller
         }
         else
         {
-            // Debugging: Poți vedea exact ce eroare apare dacă mai ai probleme
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
             TempData["MesajEroare"] = "Eroare: " + string.Join(" | ", errors);
-            // Mesajul vechi era: "Nu am putut adăuga review-ul..."
         }
 
         return RedirectToAction("Details", "Evenimente", new { id = review.EvenimentId });
     }
 
-    // 2. ȘTERGERE (POST)
     [HttpPost]
     [Authorize]
     [ValidateAntiForgeryToken]
@@ -62,10 +54,9 @@ public class ReviewsController : Controller
 
         var userId = _userManager.GetUserId(User);
 
-        // Verificăm dacă ești proprietarul sau Admin
         if (review.UtilizatorId == userId || User.IsInRole("Admin"))
         {
-            int evenimentId = review.EvenimentId; // Ținem minte ID-ul evenimentului
+            int evenimentId = review.EvenimentId;
             _context.Reviews.Remove(review);
             await _context.SaveChangesAsync();
             TempData["MesajSucces"] = "Review șters cu succes.";
@@ -79,7 +70,6 @@ public class ReviewsController : Controller
         return RedirectToAction("Details", "Evenimente", new { id = review.EvenimentId });
     }
 
-    // 3. EDITARE (GET) - Afișează pagina de editare
     [Authorize]
     public async Task<IActionResult> Edit(int id)
     {
@@ -87,7 +77,6 @@ public class ReviewsController : Controller
 
         if (review == null) return NotFound();
 
-        // Verificare proprietar
         if (review.UtilizatorId != _userManager.GetUserId(User))
         {
             return Forbid();
@@ -96,7 +85,6 @@ public class ReviewsController : Controller
         return View(review);
     }
 
-    // 4. EDITARE (POST) - Salvează modificările
     [HttpPost]
     [Authorize]
     [ValidateAntiForgeryToken]
@@ -107,16 +95,14 @@ public class ReviewsController : Controller
         var reviewOriginal = await _context.Reviews.FindAsync(id);
         if (reviewOriginal == null) return NotFound();
 
-        // Verificare proprietar
         if (reviewOriginal.UtilizatorId != _userManager.GetUserId(User))
         {
             return Forbid();
         }
 
-        // Actualizăm doar conținutul și ratingul
         reviewOriginal.Continut = reviewActualizat.Continut;
         reviewOriginal.Rating = reviewActualizat.Rating;
-        reviewOriginal.DataPostarii = DateTime.Now; // Opțional: actualizăm data
+        reviewOriginal.DataPostarii = DateTime.Now; 
 
         if (reviewActualizat.Continut.Length >= 10 && reviewActualizat.Continut.Length <= 500)
         {
@@ -133,29 +119,23 @@ public class ReviewsController : Controller
 
     private async Task ActualizeazaRatingEveniment(int evenimentId)
     {
-        // 1. Găsim evenimentul
         var eveniment = await _context.Evenimente
             .Include(e => e.Reviews)
             .FirstOrDefaultAsync(e => e.Id == evenimentId);
 
         if (eveniment != null)
         {
-            // 2. Verificăm dacă are recenzii
             if (eveniment.Reviews != null && eveniment.Reviews.Any())
             {
-                // 3. Calculăm media (Average)
                 double media = eveniment.Reviews.Average(r => r.Rating);
 
-                // Opțional: Rotunjim la 2 zecimale (ex: 4.66)
                 eveniment.RatingMediu = Math.Round(media, 2);
             }
             else
             {
-                // Dacă s-a șters ultima recenzie, resetăm la 0
                 eveniment.RatingMediu = 0;
             }
 
-            // 4. Salvăm modificarea în Event
             _context.Update(eveniment);
             await _context.SaveChangesAsync();
         }
